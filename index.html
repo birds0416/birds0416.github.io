@@ -1,13 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Github Page</title>
-  </head>
+    <title>Hojung Lim (Roy Lim)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  <body>
-    <hl>Welcom to My Website</hl>
-    <p>This is Sample</p>
-  </body>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .github-link {
+            color: #0366d6;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: color 0.3s;
+        }
+
+        .github-link:hover {
+            color: #0256b9;
+            text-decoration: underline;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .thumbnail-button {
+            position: relative;
+            height: 200px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .thumbnail-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .thumbnail-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s;
+        }
+
+        .thumbnail-button:hover .thumbnail-image {
+            opacity: 0.8;
+        }
+
+        .thumbnail-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            padding: 30px 20px 20px;
+            color: white;
+        }
+
+        .thumbnail-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Your Name</h1>
+            <a href="https://github.com/birds0416" class="github-link" target="_blank">
+                GitHub Profile
+            </a>
+        </header>
+
+        <div class="button-grid">
+            <a href="project1.html" class="thumbnail-button">
+                <img src="images/thumbnail1.jpg" alt="Project 1" class="thumbnail-image">
+                <div class="thumbnail-overlay">
+                    <div class="thumbnail-title">Project 1</div>
+                </div>
+            </a>
+
+            <a href="project2.html" class="thumbnail-button">
+                <img src="images/thumbnail2.jpg" alt="Project 2" class="thumbnail-image">
+                <div class="thumbnail-overlay">
+                    <div class="thumbnail-title">Project 2</div>
+                </div>
+            </a>
+
+            <a href="project3.html" class="thumbnail-button">
+                <img src="images/thumbnail3.jpg" alt="Project 3" class="thumbnail-image">
+                <div class="thumbnail-overlay">
+                    <div class="thumbnail-title">Project 3</div>
+                </div>
+            </a>
+
+            <a href="project4.html" class="thumbnail-button">
+                <img src="images/thumbnail4.jpg" alt="Project 4" class="thumbnail-image">
+                <div class="thumbnail-overlay">
+                    <div class="thumbnail-title">Project 4</div>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
 </html>
