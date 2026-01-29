@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Capstone Design - Hojung Lim</title>
+    <title>Senior Capstone Design - Hojung Lim</title>
     <style>
         * {
             margin: 0;
@@ -57,6 +57,30 @@
             margin-bottom: 20px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
+        .image-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .project-image-half {
+            width: 50%;
+            display: block;
+            margin: 0 auto 20px auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Make it responsive for mobile */
+        @media (max-width: 768px) {
+            .image-row {
+                flex-direction: column;
+            }
+            
+            .project-image-half {
+                width: 100%;
+            }
+        }
 
         .project-description {
             font-size: 1.1em;
@@ -79,26 +103,26 @@
         <h1>Mechanical Engineering Design I, II - 3DoF Pan-Tilt System</h1>
         
         <div class="project-section">
-            <img src="images/project1-photo1.jpg" alt="Project 1 Photo 1" class="project-image">
-            <div class="project-description">
-                <p>Description of this photo and what it shows. Explain the key features, challenges, or interesting aspects of this part of your project.</p>
+            <div class="image-row">
+                <img src="images/MEC_Capstone.png" alt="Project 1 Photo 1" class="project-image-half">
+                <img src="images/MEC_Capstone_design.png" alt="Project 1 Photo 1" class="project-image-half">
             </div>
-        </div>
-
-        <div class="project-section">
-            <h2>Section Title</h2>
-            <img src="images/project1-photo2.jpg" alt="Project 1 Photo 2" class="project-image">
             <div class="project-description">
-                <p>Another description explaining this aspect of your project. You can add multiple paragraphs if needed.</p>
-                <p>Additional details, technical information, or results you want to highlight.</p>
+                <p>This was part of the Senior Capstone Design Project. 
+                    The aim of this project is to build an effective camera system that can track objects in any direction. 
+                    To track object, rather than implementing complex algorithms for object detection, it would be better to detect color of an object.
+                </p>
             </div>
         </div>
 
         <div class="project-section">
             <h2>Results</h2>
-            <img src="images/project1-photo3.jpg" alt="Project 1 Photo 3" class="project-image">
+            <img src="images/MEC_Capstone_work.png" alt="Project 1 Photo 3" class="project-image-half">
             <div class="project-description">
-                <p>Final results, conclusions, or next steps for this project.</p>
+                <p>There were several constraints like low resolution of the camera, and wire tangling problem when rotating.
+                    In order to solve those problems, my team came up with multiple concept designs.</p>
+                <p>Also, the initial objective was to build a 3DoF machine, but my team couldn't successfully design the roll rotation 
+                    which would allow the camera to rotate due to wire tangling problems.</p>
             </div>
         </div>
     </div>

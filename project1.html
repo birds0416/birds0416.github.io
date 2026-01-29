@@ -57,6 +57,30 @@
             margin-bottom: 20px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
+        .image-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .project-image-half {
+            width: 50%;
+            display: block;
+            margin: 0 auto 20px auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Make it responsive for mobile */
+        @media (max-width: 768px) {
+            .image-row {
+                flex-direction: column;
+            }
+            
+            .project-image-half {
+                width: 100%;
+            }
+        }
 
         .project-description {
             font-size: 1.1em;
