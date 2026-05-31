@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AME508 - PINN-Aided Gravity Anomaly Navigation - Hojung Lim</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #0366d6;
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-size: 1em;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #0256b9;
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .authors {
+            color: #777;
+            font-size: 1em;
+            margin-bottom: 30px;
+        }
+
+        .project-section {
+            margin-bottom: 50px;
+        }
+
+        .project-image {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .project-image-half {
+            width: 50%;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .image-row {
+                flex-direction: column;
+            }
+            .project-image-half {
+                width: 100%;
+            }
+        }
+
+        .project-description {
+            font-size: 1em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .project-description p {
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6em;
+            color: #333;
+            margin-bottom: 15px;
+            margin-top: 30px;
+            border-left: 4px solid #0366d6;
+            padding-left: 12px;
+        }
+
+        h3 {
+            font-size: 1.2em;
+            color: #444;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .tag {
+            background-color: #e8f4ff;
+            color: #0366d6;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .highlight-box {
+            background-color: #f0f7ff;
+            border-left: 4px solid #0366d6;
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #0366d6;
+        }
+
+        .metric-label {
+            font-size: 0.85em;
+            color: #777;
+            margin-top: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+        }
+
+        th {
+            background-color: #0366d6;
+            color: white;
+            padding: 10px 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 9px 14px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f8f9fa;
+        }
+
+        .formula-block {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 14px 18px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.92em;
+            color: #333;
+            margin-bottom: 16px;
+            overflow-x: auto;
+        }
+
+        .doc-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .pdf-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #0366d6;
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #f0f0f0;
+            border-radius: 6px;
+            font-size: 0.95em;
+            transition: background-color 0.3s;
+        }
+
+        .pdf-link:hover {
+            background-color: #e0e0e0;
+            text-decoration: underline;
+        }
+
+        ul, ol {
+            padding-left: 22px;
+            color: #555;
+        }
+
+        ul li, ol li {
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Home</a>
+
+        <h1>PINN-Aided Gravity Anomaly Map Matching for GNSS-Denied Inertial Navigation</h1>
+        <p class="authors">Hojung Lim, Souvik Chatterjee, Kenneth Tseng &nbsp;·&nbsp; AME 508 – Spring 2026</p>
+
+        <div class="tag-list">
+            <span class="tag">PINN</span>
+            <span class="tag">Inertial Navigation</span>
+            <span class="tag">EKF</span>
+            <span class="tag">GNSS-Denied</span>
+            <span class="tag">Gravity Anomaly</span>
+            <span class="tag">Deep Learning</span>
+            <span class="tag">PyTorch</span>
+        </div>
+
+        <!-- Motivation & Objective -->
+        <div class="project-section">
+            <h2>Motivation &amp; Objective</h2>
+            <div class="highlight-box">
+                Reliable navigation in GNSS-denied environments is critical for autonomous systems and defense
+                applications. Low-fidelity gravity models fail to capture local anomalies that carry precise positional
+                information. The differentiable nature of PINNs makes them naturally compatible with EKF-based
+                state estimation — eliminating the need for manual linearization.
+            </div>
+            <div class="project-description">
+                <p>
+                    This project aims to correct INS drift in GNSS-denied environments by training a
+                    <strong>Physics-Informed Neural Network (PINN)</strong> to learn the residual gravity anomaly
+                    <em>δg</em>. The PINN-predicted anomaly is compared against onboard gravimeter measurements to
+                    generate an innovation term in an Extended Kalman Filter (EKF), where the required Jacobian
+                    is computed via <strong>automatic differentiation</strong> of the PINN.
+                </p>
+            </div>
+        </div>
+
+        <!-- System Architecture -->
+        <div class="project-section">
+            <h2>System Architecture</h2>
+            <div class="project-description">
+                <p>
+                    The proposed pipeline integrates a PINN with an INS and EKF framework. The PINN takes
+                    position coordinates (lat, lon, alt) as input and outputs the corresponding gravity anomaly
+                    <em>δg</em> through a fully connected network with:
+                </p>
+                <ul>
+                    <li>4 hidden layers of 64 neurons each</li>
+                    <li>Tanh activation functions with skip connections</li>
+                    <li>Jacobian H computed via automatic differentiation</li>
+                </ul>
+            </div>
+
+            <h3>EKF Predict Step</h3>
+            <div class="formula-block">
+x<sub>k|k-1</sub> = F · x<sub>k-1|k-1</sub>
+P<sub>k|k-1</sub> = F · P<sub>k-1|k-1</sub> · Fᵀ + Q
+            </div>
+
+            <h3>EKF Update Step</h3>
+            <div class="formula-block">
+v<sub>k</sub>  = δg<sub>measured</sub> − δg<sub>PINN</sub>(x<sub>k|k-1</sub>)
+K<sub>k</sub>  = P<sub>k|k-1</sub> Hᵀ (H P<sub>k|k-1</sub> Hᵀ + R)⁻¹
+x<sub>k|k</sub>  = x<sub>k|k-1</sub> + K<sub>k</sub> v<sub>k</sub>
+P<sub>k|k</sub>  = (I − K<sub>k</sub> H) P<sub>k|k-1</sub>
+H  = ∇ₓ δg<sub>PINN</sub>   (via automatic differentiation)
+            </div>
+        </div>
+
+        <!-- PINN Training -->
+        <div class="project-section">
+            <h2>PINN Training</h2>
+            <div class="project-description">
+                <p>
+                    Training data: <strong>32,768 position–gravity anomaly pairs</strong> synthesized from the
+                    GGMplus N30W120 tile over the USC campus region (34.02°N, 118.29°W), sampled on a
+                    64×64 uniform grid at 8 altitude levels (0–200 m).
+                </p>
+            </div>
+
+            <h3>Loss Function</h3>
+            <div class="formula-block">
+L<sub>total</sub> = L<sub>data</sub> + λ · L<sub>physics</sub>
+
+L<sub>data</sub>    — absolute + relative prediction error (prevents low-altitude bias)
+L<sub>physics</sub> — Laplacian regularization:  ||∇²(δg<sub>PINN</sub>)||
+
+Boundary condition:  Δg(r) = ω<sub>NN</sub>(r)·Δg<sub>NN</sub>(r) + ω<sub>BC</sub>(r)·Δg<sub>BC</sub>(r)
+            </div>
+
+            <div class="project-description">
+                <p>Optimizer: Adam (lr = 2⁻⁸, batch size 512, λ = 10⁻³). Data split: 22,937 train / 4,915 val / 4,916 test.</p>
+            </div>
+
+            <h3>Test 1 vs. Test 2 — Normalization Scope</h3>
+            <div class="project-description">
+                <p>
+                    Two PINN variants were evaluated to study the effect of normalization scope:
+                </p>
+                <ul>
+                    <li><strong>Test 1:</strong> StandardScaler fitted to the <em>local USC subgrid</em> (mean = −75.1 mGal, std = 8.1 mGal)</li>
+                    <li><strong>Test 2:</strong> StandardScaler fitted to the <em>full GGMplus tile</em> (mean = −105.9 mGal, std = 21.8 mGal) — introduces distribution mismatch</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="project-section">
+            <h2>Results</h2>
+
+            <h3>PINN Performance</h3>
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-value">0.20%</div>
+                    <div class="metric-label">Test 1 Relative Error</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">0.2434 mGal</div>
+                    <div class="metric-label">Test 1 RMSE</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">0.19 mGal</div>
+                    <div class="metric-label">USC Origin Prediction Error</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">0.30%</div>
+                    <div class="metric-label">PINN-GM-III Benchmark</div>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>RMSE (mGal)</th>
+                        <th>MAE (mGal)</th>
+                        <th>Relative Error</th>
+                        <th>USC δg Prediction</th>
+                        <th>USC Error</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Test 1</strong> (local norm.)</td>
+                        <td>0.2434</td>
+                        <td>0.1383</td>
+                        <td>0.20%</td>
+                        <td>−79.30 mGal</td>
+                        <td>0.19 mGal</td>
+                    </tr>
+                    <tr>
+                        <td>Test 2 (tile norm.)</td>
+                        <td>0.5300</td>
+                        <td>0.2821</td>
+                        <td>0.31%</td>
+                        <td>−95.39 mGal</td>
+                        <td>16.27 mGal</td>
+                    </tr>
+                    <tr>
+                        <td>PINN-GM-III (benchmark)</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>0.30%</td>
+                        <td>—</td>
+                        <td>—</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="project-description">
+                <p>
+                    Test 1 outperforms both Test 2 and the PINN-GM-III paper benchmark. The EKF Jacobian
+                    H = [253.3, 3.22, 4.1×10⁻⁵] mGal/deg was successfully obtained via automatic
+                    differentiation — confirming suitability for EKF integration at sub-meter position resolution.
+                </p>
+            </div>
+
+            <h3>EKF Navigation Correction</h3>
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-value">2,957 m</div>
+                    <div class="metric-label">Raw IMU Dead-Reckoning RMSE</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">53,181 m</div>
+                    <div class="metric-label">Test 1 + EKF RMSE</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">26,547 m</div>
+                    <div class="metric-label">Test 2 + Free-Air Correction + EKF RMSE</div>
+                </div>
+            </div>
+
+            <div class="project-description">
+                <p>
+                    The EKF diverged in both implementations. The root cause is the USC campus gravity field being
+                    nearly flat: <em>δg</em> varies only 0.047 mGal over the 1.5 km path while gravimeter noise is
+                    0.5 mGal (SNR = 0.09). Additionally, the gravity gradient along the East and Up axes is nearly
+                    zero (H<sub>x</sub> = 2.5×10⁻⁵, H<sub>z</sub> = 4.1×10⁻⁵ mGal/m), driving the Kalman gain
+                    K ≈ 0 in those directions.
+                </p>
+                <p>
+                    Applying a <strong>free-air altitude correction</strong> (−0.3086 mGal/m) to the training data
+                    and retraining reduced the EKF RMSE from 53,181 m to 26,547 m — demonstrating improved
+                    vertical observability through altitude-dependent gravity variation.
+                </p>
+            </div>
+        </div>
+
+        <!-- Conclusions -->
+        <div class="project-section">
+            <h2>Conclusions</h2>
+            <div class="project-description">
+                <p>
+                    This project demonstrated a PINN-based approach to gravity-aided inertial navigation in
+                    GNSS-denied environments. Key findings:
+                </p>
+                <ul>
+                    <li>The trained PINN achieved <strong>0.20% gravity anomaly prediction error</strong>, surpassing the PINN-GM-III benchmark of 0.30%.</li>
+                    <li>Normalization must be fitted to the <strong>local operating region</strong>: locally-normalized Test 1 achieved 16× lower prediction error than the tile-normalized variant.</li>
+                    <li>EKF-based navigation correction diverged due to insufficient gravity signal variation (SNR = 0.09) and an unobservable system along East and Up axes.</li>
+                    <li>Free-air altitude correction reduced EKF RMSE by ~50%, confirming improved vertical observability.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Future Work -->
+        <div class="project-section">
+            <h2>Future Work</h2>
+            <ol>
+                <li>Redesign the trajectory over terrain with higher gravity gradients to satisfy EKF observability.</li>
+                <li>Adopt navigation-grade gravimeter noise (~0.01 mGal) to raise SNR above 1.</li>
+                <li>Unify the EKF state in local ENU coordinates and calibrate Q to match actual gravity SNR.</li>
+                <li>Simulate a <strong>gradiometer</strong> instead of a scalar gravimeter to measure gravity gradients in all three directions.</li>
+                <li>Aid the PINN with other non-GNSS sensors to bring the observability matrix to full rank.</li>
+            </ol>
+        </div>
+
+        <!-- References -->
+        <div class="project-section">
+            <h2>References</h2>
+            <ol>
+                <li>
+                    X. Wang, C. Gilliam, A. Kealy, J. Close, and B. Moran, "Probabilistic Map Matching for Robust
+                    Inertial Navigation Aiding," <em>NAVIGATION</em>, vol. 70, no. 2, 2023.
+                    <a href="https://doi.org/10.33012/navi.583" target="_blank">doi:10.33012/navi.583</a>
+                </li>
+                <li>
+                    J. Martin and H. Schaub, "The Physics-Informed Neural Network Gravity Model: Generation III,"
+                    <em>Journal of the Astronautical Sciences</em>, 2025.
+                    <a href="https://arxiv.org/abs/2312.10257" target="_blank">arXiv:2312.10257</a>
+                </li>
+                <li>
+                    C. Tan et al., "Vehicle State Estimation Combining Physics-Informed Neural Network and Unscented
+                    Kalman Filtering on Manifolds," <em>Sensors</em>, vol. 23, 2023.
+                    <a href="https://doi.org/10.3390/s23156665" target="_blank">doi:10.3390/s23156665</a>
+                </li>
+            </ol>
+        </div>
+
+        <!-- Documentation -->
+        <div class="project-section">
+            <h2>Project Documentation</h2>
+            <div class="project-description">
+                <p>For more details, view the full report and presentation slides:</p>
+            </div>
+            <div class="doc-links">
+                <a href="documents/AME508_Project_Report.pdf" target="_blank" class="pdf-link">📄 Project Report (PDF)</a>
+                <a href="documents/AME508_Final_Slides.pptx" target="_blank" class="pdf-link">📊 Presentation Slides (PPTX)</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
