@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Rescue System - Hojung Lim</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -24,7 +20,7 @@
             background: white;
             padding: 40px;
             border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .back-link {
@@ -35,142 +31,182 @@
             font-size: 1em;
             transition: color 0.3s;
         }
+        .back-link:hover { color: #0256b9; text-decoration: underline; }
 
-        .back-link:hover {
-            color: #0256b9;
-            text-decoration: underline;
+        h1 { font-size: 2em; color: #333; margin-bottom: 10px; }
+
+        .subtitle { color: #777; font-size: 1em; margin-bottom: 30px; }
+
+        .tag-list { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
+        .tag {
+            background-color: #e8f4ff;
+            color: #0366d6;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
         }
 
-        h2 {
-            font-size: 2.5em;
-            color: #333;
-            margin-bottom: 30px;
-        }
-
-        .project-section {
-            margin-bottom: 50px;
-        }
+        .project-section { margin-bottom: 50px; }
 
         .project-image {
             width: 100%;
             border-radius: 8px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        .image-row {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
+        .image-row { display: flex; gap: 20px; margin-bottom: 20px; }
         .project-image-half {
             width: 50%;
             display: block;
-            margin: 0 auto 20px auto;
             border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        /* Make it responsive for mobile */
         @media (max-width: 768px) {
-            .image-row {
-                flex-direction: column;
-            }
-            
-            .project-image-half {
-                width: 100%;
-            }
+            .image-row { flex-direction: column; }
+            .project-image-half { width: 100%; }
         }
 
-        .project-description {
-            font-size: 1em;
-            color: #555;
-            margin-bottom: 20px;
-        }
+        .project-description { font-size: 1em; color: #555; margin-bottom: 20px; }
+        .project-description p { margin-bottom: 10px; }
 
-        h3 {
-            font-size: 1.8em;
+        h2 {
+            font-size: 1.6em;
             color: #333;
             margin-bottom: 15px;
             margin-top: 30px;
+            border-left: 4px solid #0366d6;
+            padding-left: 12px;
         }
 
+        h3 { font-size: 1.15em; color: #444; margin-bottom: 10px; margin-top: 20px; }
+
+        .highlight-box {
+            background-color: #f0f7ff;
+            border-left: 4px solid #0366d6;
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        .patent-card {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .patent-card h3 { margin-top: 0; font-size: 1em; color: #333; }
+        .patent-card .ko { color: #777; font-size: 0.92em; margin-bottom: 12px; }
+
+        .doc-links { display: flex; flex-wrap: wrap; gap: 14px; }
         .pdf-link {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             color: #0366d6;
             text-decoration: none;
             padding: 10px 20px;
             background-color: #f0f0f0;
-            border-radius: 5px;
+            border-radius: 6px;
+            font-size: 0.95em;
             transition: background-color 0.3s;
         }
-
-        .pdf-link:hover {
-            background-color: #e0e0e0;
-            text-decoration: underline;
-        }
+        .pdf-link:hover { background-color: #e0e0e0; text-decoration: underline; }
     </style>
 </head>
 <body>
     <div class="container">
         <a href="index.html" class="back-link">← Back to Home</a>
-        
-        <h3>Development of Smart Rescue System for Great Deep Railway Facilities</h3>
+
+        <h1>Development of Smart Rescue System for Great Deep Railway Facilities</h1>
+        <p class="subtitle">South Korean Government-Funded R&amp;D Initiative &nbsp;·&nbsp; CORNERS Project</p>
+
+        <div class="tag-list">
+            <span class="tag">Mobile Robotics</span>
+            <span class="tag">LiDAR SLAM</span>
+            <span class="tag">Human Pose Detection</span>
+            <span class="tag">Digital Twin</span>
+            <span class="tag">Unity</span>
+            <span class="tag">Disaster Response</span>
+            <span class="tag">Patent</span>
+        </div>
+
+        <!-- Overview -->
         <div class="project-section">
+            <h2>Project Overview</h2>
             <div class="image-row">
-                <img src="images/CORNERS_thumbnail.png" alt="Project 1 Photo 1" class="project-image-half">
-                <img src="images/CORNERS_rescue_demo.jpg" alt="Project 1 Photo 2" class="project-image-half">
+                <img src="images/CORNERS_thumbnail.png" alt="CORNERS System Overview" class="project-image-half">
+                <img src="images/CORNERS_rescue_demo.jpg" alt="Rescue Demo" class="project-image-half">
             </div>
-            <div class="project-description">
-                <p>This project is a part of South Korean government-funded R&D initative aimed at developing and demonstrating disaster awareness, 
-                    prediction, and response technologies to ensure rapid evacuation and user safety in deep underground facilities - 
-                    such as GTX complex stations and long tunnels under high-risk emergency scenarios including fire, earthquakes, and flooding.</p>
+            <div class="highlight-box">
+                A South Korean government-funded R&amp;D initiative aimed at developing and demonstrating
+                disaster awareness, prediction, and response technologies to ensure rapid evacuation and
+                user safety in deep underground facilities — such as GTX complex stations and long tunnels
+                under high-risk emergency scenarios including fire, earthquakes, and flooding.
             </div>
         </div>
 
+        <!-- Team Collaboration -->
         <div class="project-section">
-            <h3>Team Collaboration</h3>
+            <h2>Team Collaboration — Localization &amp; Digital Twin Synchronization</h2>
             <div class="image-row">
-                <img src="images/CORNERS_demo_drive.png" alt="Project 1 Photo 3" class="project-image-half">
-                <img src="images/CORNERS_demo_detect.png" alt="Project 1 Photo 3" class="project-image-half">
+                <img src="images/CORNERS_demo_drive.png" alt="Robot driving in corridor" class="project-image-half">
+                <img src="images/CORNERS_demo_detect.png" alt="Human detection visualization" class="project-image-half">
             </div>
             <div class="project-description">
-                <p>This image shows a real-world localization and synchronization test conducted in a company corridor. 
-                    In collaboration with a Unity engineer, the corridor environment was reconstructed as a 3D model in Unity 
-                    and synchronized with a physical mobile robot in real time.</p>
-                <br>
-                <p>The robot first performed LiDAR SLAM-based mapping to generate a spatial map of the corridor, 
-                    which was then integtated into Unity to create a corresponding 3D environment. Using localization data, 
-                    the real robot and its virtual counterpart in Unity wer accurately synchronized.</p>
-                <br>
-                <p>In addition, a human pose detection algorithm running on the robot was used to detect nearby people. 
-                    When a person was detected, their position was accurately estimated and visualized in real time 
-                    within the Unity 3D environment, enabling precise human-robot spatial awareness.</p>
+                <p>
+                    A real-world localization and synchronization test was conducted in a company corridor.
+                    In collaboration with a Unity engineer, the corridor environment was reconstructed as a
+                    3D model in Unity and synchronized with a physical mobile robot in real time.
+                </p>
+                <p>
+                    The robot first performed <strong>LiDAR SLAM-based mapping</strong> to generate a spatial map
+                    of the corridor, which was then integrated into Unity to create a corresponding 3D environment.
+                    Using localization data, the real robot and its virtual counterpart in Unity were accurately synchronized.
+                </p>
+                <p>
+                    A <strong>human pose detection algorithm</strong> running on the robot detected nearby people.
+                    When a person was detected, their position was accurately estimated and visualized in real time
+                    within the Unity 3D environment, enabling precise human-robot spatial awareness.
+                </p>
             </div>
         </div>
-        
+
+        <!-- Seminar -->
         <div class="project-section">
-            <h3>International Seminar Presentation</h3>
-            <img src="images/CORNERS_seminar.png" alt="Project 1 Photo 3" class="project-image">
+            <h2>International Seminar Presentation</h2>
+            <img src="images/CORNERS_seminar.png" alt="International Seminar" class="project-image">
+            <div class="project-description">
+                <p>Research outcomes were presented at an international seminar, showcasing the system's
+                    capabilities for disaster-aware navigation and real-time digital twin synchronization.</p>
+            </div>
         </div>
-        
+
+        <!-- Patents -->
         <div class="project-section">
-            <h3>Patent</h3>
+            <h2>Patents</h2>
             <div class="image-row">
-                <img src="images/CORNERS_patent_2.png" alt="Project 1 Photo 3" class="project-image-half">
-                <img src="images/CORNERS_patent_1.png" alt="Project 1 Photo 3" class="project-image-half">
+                <img src="images/CORNERS_patent_2.png" alt="Patent 2" class="project-image-half">
+                <img src="images/CORNERS_patent_1.png" alt="Patent 1" class="project-image-half">
             </div>
-            <p>For more detailed information, you can view the full patent report:</p>
-            <br>
-            <div class="project-description">
-                <h4>Robot for Guiding Evacuation Routh For Persons in the Space in the Event of Emergency and Method for Controlling trhe Same</h4>
-                <h4>비상 상황 발생 시 공간 내 인원에게 대피 경로를 안내하는 로봇 및 로봇 제어 방법</h4>
-                <p><a href="documents/10-2647612_patent.pdf" target="_blank" class="pdf-link">📄 View Patent Report (KOREAN, PDF)</a></p>
+
+            <div class="patent-card">
+                <h3>Robot for Guiding Evacuation Route for Persons in the Space in the Event of Emergency and Method for Controlling the Same</h3>
+                <p class="ko">비상 상황 발생 시 공간 내 인원에게 대피 경로를 안내하는 로봇 및 로봇 제어 방법</p>
+                <div class="doc-links">
+                    <a href="documents/10-2647612_patent.pdf" target="_blank" class="pdf-link">📄 View Patent (Korean, PDF)</a>
+                </div>
             </div>
-            <div class="project-description">
-                <h4>Smart System and Operation Method of Smart System for evacuation and Rescue Support in case of Large Building Disaster</h4>
-                <h4>대형 건축물 재난 시 대피 및 구조지원을 위한 스마트 시스템 및 스마트 시스템의 동작 방법</h4>
-                <p><a href="documents/10-279429_patent.pdf" target="_blank" class="pdf-link">📄 View Patent Report (KOREAN, PDF)</a></p>
+
+            <div class="patent-card">
+                <h3>Smart System and Operation Method for Evacuation and Rescue Support in Case of Large Building Disaster</h3>
+                <p class="ko">대형 건축물 재난 시 대피 및 구조지원을 위한 스마트 시스템 및 스마트 시스템의 동작 방법</p>
+                <div class="doc-links">
+                    <a href="documents/10-279429_patent.pdf" target="_blank" class="pdf-link">📄 View Patent (Korean, PDF)</a>
+                </div>
             </div>
         </div>
     </div>
