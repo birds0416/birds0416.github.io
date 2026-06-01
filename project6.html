@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MNIST Neural Network - Hojung Lim</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #0366d6;
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-size: 1em;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: #0256b9; text-decoration: underline; }
+
+        h1 { font-size: 2em; color: #333; margin-bottom: 10px; }
+        .subtitle { color: #777; font-size: 1em; margin-bottom: 30px; }
+
+        .tag-list { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
+        .tag {
+            background-color: #e8f4ff;
+            color: #0366d6;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .project-section { margin-bottom: 50px; }
+
+        .project-image {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .project-image-half {
+            width: 60%;
+            display: block;
+            margin: 0 auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 8px;
+        }
+        .image-row { display: flex; gap: 20px; margin-bottom: 8px; }
+        .image-row .project-image-half { width: 50%; margin: 0; }
+
+        @media (max-width: 768px) {
+            .image-row { flex-direction: column; }
+            .image-row .project-image-half { width: 100%; }
+            .project-image-half { width: 100%; }
+        }
+
+        .fig-caption {
+            text-align: center;
+            font-size: 0.85em;
+            color: #888;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .project-description { font-size: 1em; color: #555; margin-bottom: 20px; }
+        .project-description p { margin-bottom: 10px; }
+
+        h2 {
+            font-size: 1.6em;
+            color: #333;
+            margin-bottom: 15px;
+            margin-top: 30px;
+            border-left: 4px solid #0366d6;
+            padding-left: 12px;
+        }
+
+        h3 { font-size: 1.15em; color: #444; margin-bottom: 10px; margin-top: 20px; }
+
+        .highlight-box {
+            background-color: #f0f7ff;
+            border-left: 4px solid #0366d6;
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .metric-card {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+        .metric-value { font-size: 1.5em; font-weight: bold; color: #0366d6; }
+        .metric-label { font-size: 0.82em; color: #777; margin-top: 4px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        th {
+            background-color: #0366d6;
+            color: white;
+            padding: 10px 12px;
+            text-align: left;
+        }
+        td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
+        }
+        tr:nth-child(even) td { background-color: #f8f9fa; }
+        tr.best td { font-weight: bold; background-color: #e8f4ff !important; color: #0366d6; }
+
+        ul, ol { padding-left: 22px; color: #555; }
+        ul li, ol li { margin-bottom: 6px; }
+
+        .doc-links { display: flex; flex-wrap: wrap; gap: 14px; }
+        .pdf-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #0366d6;
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #f0f0f0;
+            border-radius: 6px;
+            font-size: 0.95em;
+            transition: background-color 0.3s;
+        }
+        .pdf-link:hover { background-color: #e0e0e0; text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Home</a>
+
+        <h1>Recognizing Handwritten Digits Using Neural Networks on the MNIST Dataset</h1>
+        <p class="subtitle">Hojung Lim &nbsp;·&nbsp; MASC 520 – Project 1 · USC Spring 2026</p>
+
+        <div class="tag-list">
+            <span class="tag">Neural Networks</span>
+            <span class="tag">MNIST</span>
+            <span class="tag">Classification</span>
+            <span class="tag">Cross-Entropy</span>
+            <span class="tag">L2 Regularization</span>
+            <span class="tag">Python</span>
+            <span class="tag">Backpropagation</span>
+        </div>
+
+        <!-- Overview -->
+        <div class="project-section">
+            <h2>Overview</h2>
+            <div class="highlight-box">
+                Feedforward neural networks applied to handwritten digit classification on MNIST (70,000 images,
+                28×28 px). Thirteen experiments systematically varied hidden layer size, learning rate, regularization
+                strength, and mini-batch size — improving accuracy from ~95% baseline to <strong>98.1%</strong>.
+            </div>
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-value">98.1%</div>
+                    <div class="metric-label">Best Evaluation Accuracy</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">13</div>
+                    <div class="metric-label">Experiments Conducted</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">784→200→10</div>
+                    <div class="metric-label">Best Architecture</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">η = 0.1</div>
+                    <div class="metric-label">Optimal Learning Rate</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Method -->
+        <div class="project-section">
+            <h2>Method</h2>
+            <img src="images/MASC520_P1_fig1.png" alt="Figure 1: Network Architecture" class="project-image-half">
+            <p class="fig-caption">Figure 1: Network architecture — 784 input neurons, 200 hidden neurons, 10 output neurons</p>
+            <div class="project-description">
+                <p>
+                    A three-layer feedforward network: 784 input neurons (one per pixel), a variable hidden layer,
+                    and 10 output neurons (one per digit class). All neurons use <strong>sigmoid activation</strong>.
+                    Training uses <strong>stochastic gradient descent</strong> with backpropagation.
+                </p>
+                <p>Key improvements over the baseline:</p>
+                <ul>
+                    <li><strong>Cross-entropy cost</strong> — produces stronger gradient signals when the network is confidently wrong</li>
+                    <li><strong>L2 regularization</strong> — penalizes large weights to improve generalization</li>
+                    <li><strong>Improved weight initialization</strong> — scaled by 1/√n to prevent neuron saturation at the start</li>
+                </ul>
+                <p>Four hyperparameters were varied: hidden layer size (30, 100, 200), learning rate (0.1, 0.5, 2.0),
+                   regularization strength (λ = 0.1, 1.0, 5.0), and mini-batch size (10, 32).</p>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="project-section">
+            <h2>Results</h2>
+
+            <h3>All 13 Experiments</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Test #</th>
+                        <th>Architecture</th>
+                        <th>Epochs</th>
+                        <th>Batch</th>
+                        <th>η</th>
+                        <th>λ</th>
+                        <th>Samples</th>
+                        <th>Train Acc.</th>
+                        <th>Eval Acc.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>784,30,10</td><td>15</td><td>10</td><td>0.1</td><td>5.0</td><td>10k</td><td>96.0%</td><td>93.6%</td></tr>
+                    <tr><td>2</td><td>784,30,10</td><td>15</td><td>10</td><td>0.5</td><td>5.0</td><td>10k</td><td>96.4%</td><td>93.4%</td></tr>
+                    <tr><td>3</td><td>784,30,10</td><td>15</td><td>10</td><td>2.0</td><td>5.0</td><td>10k</td><td>89.4%</td><td>87.9%</td></tr>
+                    <tr><td>4</td><td>784,100,10</td><td>30</td><td>10</td><td>0.1</td><td>5.0</td><td>50k</td><td>99.1%</td><td>97.9%</td></tr>
+                    <tr><td>5</td><td>784,100,10</td><td>30</td><td>10</td><td>0.5</td><td>5.0</td><td>50k</td><td>98.9%</td><td>97.7%</td></tr>
+                    <tr><td>6</td><td>784,100,10</td><td>30</td><td>10</td><td>2.0</td><td>5.0</td><td>50k</td><td>96.1%</td><td>95.8%</td></tr>
+                    <tr class="best"><td>7 ★</td><td>784,200,10</td><td>60</td><td>10</td><td>0.1</td><td>5.0</td><td>50k</td><td>99.5%</td><td>98.1%</td></tr>
+                    <tr><td>8</td><td>784,200,10</td><td>60</td><td>10</td><td>0.5</td><td>5.0</td><td>50k</td><td>99.2%</td><td>98.0%</td></tr>
+                    <tr><td>9</td><td>784,200,10</td><td>60</td><td>10</td><td>2.0</td><td>5.0</td><td>50k</td><td>95.6%</td><td>95.6%</td></tr>
+                    <tr><td>10</td><td>784,200,10</td><td>30</td><td>10</td><td>0.1</td><td>0.1</td><td>50k</td><td>99.9%</td><td>98.0%</td></tr>
+                    <tr><td>11</td><td>784,200,10</td><td>30</td><td>10</td><td>0.1</td><td>1.0</td><td>50k</td><td>99.8%</td><td>98.2%</td></tr>
+                    <tr><td>12</td><td>784,200,10</td><td>30</td><td>32</td><td>0.1</td><td>0.1</td><td>50k</td><td>98.6%</td><td>97.6%</td></tr>
+                    <tr><td>13</td><td>784,200,10</td><td>30</td><td>32</td><td>0.1</td><td>1.0</td><td>50k</td><td>98.7%</td><td>97.7%</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Effect of Learning Rate</h3>
+            <img src="images/MASC520_P1_fig2.png" alt="Figure 2: Effect of learning rate" class="project-image">
+            <p class="fig-caption">Figure 2: Effect of learning rate on [784, 200, 10] network</p>
+            <div class="project-description">
+                <p>
+                    Learning rate had the largest impact. With [784, 100, 10]: η=0.1 → 97.9%, η=0.5 → 97.7%,
+                    η=2.0 → 95.8%. Too high a learning rate causes weight updates to overshoot.
+                </p>
+            </div>
+
+            <h3>Effect of Network Size</h3>
+            <img src="images/MASC520_P1_fig3.png" alt="Figure 3: Effect of network size" class="project-image">
+            <p class="fig-caption">Figure 3: Effect of network size — 30 vs. 100 vs. 200 hidden neurons</p>
+            <div class="project-description">
+                <p>
+                    Larger hidden layers improve accuracy, but only when paired with sufficient epochs and
+                    training data: 30 neurons → 93.6%, 100 neurons → 97.9%, 200 neurons → 98.1%.
+                </p>
+            </div>
+
+            <h3>Effect of Mini-Batch Size &amp; Regularization</h3>
+            <img src="images/MASC520_P1_fig4.png" alt="Figure 4: Mini-batch size and regularization" class="project-image">
+            <p class="fig-caption">Figure 4: Effect of mini-batch size and regularization strength ([784,200,10], η=0.1, 30 epochs)</p>
+            <div class="project-description">
+                <p>
+                    Batch size 10 outperformed batch size 32 (97.6–97.7% vs 98.0–98.2%) because smaller batches
+                    update weights ~3× more frequently per epoch. Regularization strength (λ=0.1 vs 1.0) had
+                    minimal impact, suggesting the network is not very sensitive to λ in this range.
+                </p>
+            </div>
+
+            <h3>Best Model Predictions</h3>
+            <img src="images/MASC520_P1_fig5.png" alt="Figure 5: Predictions on 20 test images" class="project-image">
+            <p class="fig-caption">Figure 5: Predictions of the best model ([784,200,10], η=0.1, λ=5.0, 60 epochs) on 20 MNIST test images</p>
+        </div>
+
+        <!-- Conclusion -->
+        <div class="project-section">
+            <h2>Conclusion</h2>
+            <div class="project-description">
+                <p>
+                    Accuracy improved from ~95% to 98.1%. The biggest gains came from the right cost function
+                    (cross-entropy), regularization, and careful learning rate selection — not from simply enlarging
+                    the network. Key findings:
+                </p>
+                <ul>
+                    <li><strong>Learning rate</strong> was the most critical hyperparameter — too high degrades performance regardless of architecture</li>
+                    <li><strong>Mini-batch size</strong> had a measurable effect — smaller batches outperform larger ones due to more frequent updates</li>
+                    <li><strong>Regularization strength</strong> had minimal impact within the tested range</li>
+                    <li>98.1% with a single hidden layer shows that a well-tuned simple network can be very effective</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

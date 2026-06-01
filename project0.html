@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AME556 Final Project - Hojung Lim</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -24,7 +20,7 @@
             background: white;
             padding: 40px;
             border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .back-link {
@@ -35,173 +31,218 @@
             font-size: 1em;
             transition: color 0.3s;
         }
+        .back-link:hover { color: #0256b9; text-decoration: underline; }
 
-        .back-link:hover {
-            color: #0256b9;
-            text-decoration: underline;
+        h1 { font-size: 2em; color: #333; margin-bottom: 10px; }
+        .subtitle { color: #777; font-size: 1em; margin-bottom: 30px; }
+
+        .tag-list { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
+        .tag {
+            background-color: #e8f4ff;
+            color: #0366d6;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
         }
 
-        h2 {
-            font-size: 2.5em;
-            color: #333;
-            margin-bottom: 30px;
-        }
-
-        .project-section {
-            margin-bottom: 50px;
-        }
+        .project-section { margin-bottom: 50px; }
 
         .project-image {
             width: 100%;
             border-radius: 8px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        .image-row {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
+        .image-row { display: flex; gap: 20px; margin-bottom: 20px; }
         .project-image-half {
             width: 50%;
             display: block;
-            margin: 0 auto 20px auto;
             border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        /* Make it responsive for mobile */
         @media (max-width: 768px) {
-            .image-row {
-                flex-direction: column;
-            }
-            
-            .project-image-half {
-                width: 100%;
-            }
+            .image-row { flex-direction: column; }
+            .project-image-half { width: 100%; }
         }
 
-        .project-description {
-            font-size: 1em;
-            color: #555;
-            margin-bottom: 20px;
-        }
+        .project-description { font-size: 1em; color: #555; margin-bottom: 20px; }
+        .project-description p { margin-bottom: 10px; }
 
-        h3 {
-            font-size: 1.8em;
+        h2 {
+            font-size: 1.6em;
             color: #333;
             margin-bottom: 15px;
             margin-top: 30px;
+            border-left: 4px solid #0366d6;
+            padding-left: 12px;
         }
 
-        .pdf-link {
+        h3 { font-size: 1.15em; color: #444; margin-bottom: 10px; margin-top: 20px; }
+
+        .highlight-box {
+            background-color: #f0f7ff;
+            border-left: 4px solid #0366d6;
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        .result-badge {
             display: inline-block;
+            background: #e8f4ff;
+            color: #0366d6;
+            border-radius: 6px;
+            padding: 3px 10px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .result-badge.fail { background: #fff0f0; color: #cc3333; }
+
+        .doc-links { display: flex; flex-wrap: wrap; gap: 14px; }
+        .pdf-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             color: #0366d6;
             text-decoration: none;
             padding: 10px 20px;
             background-color: #f0f0f0;
-            border-radius: 5px;
+            border-radius: 6px;
+            font-size: 0.95em;
             transition: background-color 0.3s;
         }
-
-        .pdf-link:hover {
-            background-color: #e0e0e0;
-            text-decoration: underline;
-        }
+        .pdf-link:hover { background-color: #e0e0e0; text-decoration: underline; }
     </style>
 </head>
 <body>
     <div class="container">
         <a href="index.html" class="back-link">← Back to Home</a>
-        
-        <h3>AME556 - Robot Dynamics and Control - Final Project</h3>
-        
+
+        <h1>AME556 — Robot Dynamics and Control — Final Project</h1>
+        <p class="subtitle">2D Bipedal Robot Locomotion in MuJoCo &nbsp;·&nbsp; AME 556 · USC</p>
+
+        <div class="tag-list">
+            <span class="tag">MuJoCo</span>
+            <span class="tag">PD Control</span>
+            <span class="tag">Bipedal Locomotion</span>
+            <span class="tag">Robot Dynamics</span>
+            <span class="tag">Simulation</span>
+            <span class="tag">Python</span>
+        </div>
+
+        <!-- Overview -->
         <div class="project-section">
-            <img src="images/AME556-1.png" alt="Project 1 Photo 1" class="project-image-half">
-            <div class="project-description">
-                <p>Task of the project was to design controllers for a 2D bipedal robot in MuJoCo and perform 5 tasks with a teammate</p>
+            <h2>Project Overview</h2>
+            <img src="images/AME556-1.png" alt="Bipedal Robot Overview" class="project-image-half">
+            <div class="highlight-box">
+                Design and implement controllers for a 2D bipedal robot in the MuJoCo physics
+                simulator. Working with a teammate, five increasingly complex locomotion tasks were
+                attempted, from verifying physical constraints through to running and obstacle navigation.
             </div>
         </div>
 
+        <!-- Task 1 -->
         <div class="project-section">
-            <h3>Task1 : Simulation and Physical Constraints</h3>
+            <h2>Task 1 — Simulation and Physical Constraints</h2>
             <div class="image-row">
-                <img src="images/AME556_Task1.png" alt="Project 1 Photo 2" class="project-image-half">
-                <img src="images/AME556_Task1_2.png" alt="Project 1 Photo 3" class="project-image-half">
+                <img src="images/AME556_Task1.png" alt="Task 1 - Joint constraints" class="project-image-half">
+                <img src="images/AME556_Task1_2.png" alt="Task 1 - Constraint plots" class="project-image-half">
             </div>
+            <div class="result-badge">Result: Success</div>
             <div class="project-description">
-                <p><strong>Result</strong></p> 
-                <p>The goal of this task was to check if the robot's joints (hip joints, knee joints) vioilate the given constraints in the simulation.
-                My team used PD control to simulate the robot's physical movements, and plotted the results of the values over time.</p>
-            </div>
-        </div>
-        
-        <div class="project-section">
-            <h3>Task2 : Standing and Walking</h3>
-            <div class="image-row">
-                <img src="images/AME556_Task2_stand.png" alt="Project 1 Photo 2" class="project-image-half">
-                <img src="images/AME556_Task2_stand_plot.png" alt="Project 1 Photo 2" class="project-image-half">
-            </div>
-            <div class="image-row">
-                <img src="images/AME556_Task2_walk.png" alt="Project 1 Photo 2" class="project-image-half">
-                <img src="images/AME556_Task2_walk_plot.png" alt="Project 1 Photo 2" class="project-image-half">
-            </div>
-            <div class="project-description">
-                <p><strong>Result</strong></p> 
-                <p>The goal of this task was to perform bipedal robot's standing up and down simulation, 
-                    and walking forwards and backwards with a certain velocity. 
-                    For stability, mathematical calculations were required to obtain the appropriate joint angles.
-                    Also, since the robot had to walk with stability, maintaining body orientation was considered in the calculations.</p> 
-                <p>As a result, my team designed a PD controller that allows the simulated robot to stand up and down, and walk with certain amount of speed. 
-                    The magnitude of the speed could be tuned by adjusting the gains in the calculations.</p>
-            </div>
-        </div>
-
-        <div class="project-section">
-            <h3>Task3 : Running on flat ground</h3>
-            <div class="image-row">
-                <img src="images/AME556_Task3_Run.png" alt="Project 1 Photo 2" class="project-image-half">
-                <img src="images/AME556_Task3_Run_plot.png" alt="Project 1 Photo 2" class="project-image-half">
-            </div>
-            <div class="project-description">
-                <p><strong>Result</strong></p> 
-                <p>The goal of this task was to simulate the bipedal robot to run certain amount of distance. 
-                    Same as walking, stability of the robot was the priority task. My team designed a PD controller similar to walking, but with faster frequencies and phase for each link so that the robot can run.</p> 
-                <p>As a result, the simulated robot was able to run 10 meters in 7.287 seconds.</p>
-
-            </div>
-        </div>
-
-        <div class="project-section">
-            <h3>Task4 : Stair Climbing</h3>
-            <img src="images/AME556_FinalProject_thumbnail.png" alt="Project 1 Photo 2" class="project-image">
-            <div class="project-description">
-                <p><strong>Result</strong></p> 
-                <p>The objective of this task was to simulate the bipedal robot to climb stairs with certain rise. 
-                    Similar to the walking controller in the previous tasks, the new controller had to be added with joint lifting motion 
-                    so that the simulated robot can climb the stairs. However, my team did not successfully complete the task. 
-                    Due to not enough stability when the simulated robot lifts one leg, the robot was not able to put the second step onto the stair. This led to fall and collision with the stairs.</p>
-            </div>
-        </div>
-
-        <div class="project-section">
-            <h3>Task5 : Obstacle course</h3>
-            <img src="images/AME556_Task5.png" alt="Project 1 Photo 2" class="project-image">
-            <div class="project-description">
-                <p><strong>Result</strong></p>
-                <p>The objective of this task was to simulate the bipedal robot to overcome the obstacle course. 
-                    Similar to task4, my team could not even overcome the first obstacle, which was to climb the obstacle like stairs.
-                    Since we used similar walking controller, we failed to find the appropriate joint angles that could stabilize the robot when it is climbing an obstacle.
+                <p>
+                    The goal was to verify that the robot's joints (hip and knee) respect given physical
+                    constraints during simulation. A PD controller was used to drive the robot's movements,
+                    and joint values were plotted over time to confirm constraint satisfaction.
                 </p>
             </div>
         </div>
 
+        <!-- Task 2 -->
         <div class="project-section">
-            <h3>Project Documentation</h3>
+            <h2>Task 2 — Standing and Walking</h2>
+            <div class="image-row">
+                <img src="images/AME556_Task2_stand.png" alt="Standing pose" class="project-image-half">
+                <img src="images/AME556_Task2_stand_plot.png" alt="Standing plot" class="project-image-half">
+            </div>
+            <div class="image-row">
+                <img src="images/AME556_Task2_walk.png" alt="Walking pose" class="project-image-half">
+                <img src="images/AME556_Task2_walk_plot.png" alt="Walking plot" class="project-image-half">
+            </div>
+            <div class="result-badge">Result: Success</div>
+            <div class="project-description">
+                <p>
+                    The task required simulating the robot standing up and down, then walking forward and
+                    backward at a controlled velocity. Mathematical calculations were needed to determine
+                    appropriate joint angles while maintaining body orientation for stability.
+                </p>
+                <p>
+                    The resulting PD controller allows the robot to stand, transition, and walk with tunable
+                    speed — adjustable by modifying the controller gains.
+                </p>
+            </div>
+        </div>
+
+        <!-- Task 3 -->
+        <div class="project-section">
+            <h2>Task 3 — Running on Flat Ground</h2>
+            <div class="image-row">
+                <img src="images/AME556_Task3_Run.png" alt="Running pose" class="project-image-half">
+                <img src="images/AME556_Task3_Run_plot.png" alt="Running plot" class="project-image-half">
+            </div>
+            <div class="result-badge">Result: Success</div>
+            <div class="project-description">
+                <p>
+                    Built on the walking controller with higher frequencies and phase offsets per link to
+                    achieve a running gait while maintaining robot stability.
+                </p>
+                <p>
+                    The simulated robot ran <strong>10 meters in 7.287 seconds</strong>.
+                </p>
+            </div>
+        </div>
+
+        <!-- Task 4 -->
+        <div class="project-section">
+            <h2>Task 4 — Stair Climbing</h2>
+            <img src="images/AME556_FinalProject_thumbnail.png" alt="Stair climbing attempt" class="project-image">
+            <div class="result-badge fail">Result: Unsuccessful</div>
+            <div class="project-description">
+                <p>
+                    The objective was to simulate the robot climbing stairs with a fixed rise height. The
+                    controller needed an additional joint-lifting motion on top of the walking controller.
+                    However, insufficient one-leg stability caused the robot to fall when attempting to
+                    place the second foot on the stair, leading to collision.
+                </p>
+            </div>
+        </div>
+
+        <!-- Task 5 -->
+        <div class="project-section">
+            <h2>Task 5 — Obstacle Course</h2>
+            <img src="images/AME556_Task5.png" alt="Obstacle course attempt" class="project-image">
+            <div class="result-badge fail">Result: Unsuccessful</div>
+            <div class="project-description">
+                <p>
+                    The robot could not overcome the first obstacle (stair-like structure) for the same
+                    reason as Task 4 — the walking controller could not find joint angles that maintained
+                    stability while lifting a leg over an obstacle.
+                </p>
+            </div>
+        </div>
+
+        <!-- Documentation -->
+        <div class="project-section">
+            <h2>Project Documentation</h2>
             <div class="project-description">
                 <p>For more detailed information, you can view the full project report:</p>
-                <p><a href="documents/AME556 Final Project Report_Group 5.pdf" target="_blank" class="pdf-link">📄 View Project Report (PDF)</a></p>
+            </div>
+            <div class="doc-links">
+                <a href="documents/AME556 Final Project Report_Group 5.pdf" target="_blank" class="pdf-link">📄 Project Report (PDF)</a>
             </div>
         </div>
     </div>

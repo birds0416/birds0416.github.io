@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AE and VAE on Fashion-MNIST - Hojung Lim</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #0366d6;
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-size: 1em;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: #0256b9; text-decoration: underline; }
+
+        h1 { font-size: 2em; color: #333; margin-bottom: 10px; }
+        .subtitle { color: #777; font-size: 1em; margin-bottom: 30px; }
+
+        .tag-list { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
+        .tag {
+            background-color: #e8f4ff;
+            color: #0366d6;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .project-section { margin-bottom: 50px; }
+
+        .project-image {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .project-image-half {
+            width: 60%;
+            display: block;
+            margin: 0 auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 8px;
+        }
+        .image-row { display: flex; gap: 20px; margin-bottom: 8px; }
+        .image-row img { width: 50%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+
+        @media (max-width: 768px) {
+            .image-row { flex-direction: column; }
+            .image-row img, .project-image-half { width: 100%; }
+        }
+
+        .fig-caption {
+            text-align: center;
+            font-size: 0.85em;
+            color: #888;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .project-description { font-size: 1em; color: #555; margin-bottom: 20px; }
+        .project-description p { margin-bottom: 10px; }
+
+        h2 {
+            font-size: 1.6em;
+            color: #333;
+            margin-bottom: 15px;
+            margin-top: 30px;
+            border-left: 4px solid #0366d6;
+            padding-left: 12px;
+        }
+
+        h3 { font-size: 1.15em; color: #444; margin-bottom: 10px; margin-top: 20px; }
+
+        .highlight-box {
+            background-color: #f0f7ff;
+            border-left: 4px solid #0366d6;
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .metric-card {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+        .metric-value { font-size: 1.4em; font-weight: bold; color: #0366d6; }
+        .metric-label { font-size: 0.82em; color: #777; margin-top: 4px; }
+
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .compare-card {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 18px;
+        }
+        .compare-card h4 { color: #0366d6; margin-bottom: 10px; font-size: 1em; }
+        .compare-card ul { padding-left: 18px; color: #555; font-size: 0.9em; }
+        .compare-card ul li { margin-bottom: 5px; }
+
+        @media (max-width: 600px) { .compare-grid { grid-template-columns: 1fr; } }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        th {
+            background-color: #0366d6;
+            color: white;
+            padding: 10px 12px;
+            text-align: left;
+        }
+        td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
+        }
+        tr:nth-child(even) td { background-color: #f8f9fa; }
+
+        .arch-block {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 14px 18px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        ul, ol { padding-left: 22px; color: #555; }
+        ul li, ol li { margin-bottom: 6px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Home</a>
+
+        <h1>Dimensionality Reduction and Generative Modeling with Autoencoders and Variational Autoencoders on Fashion-MNIST</h1>
+        <p class="subtitle">Hojung Lim &nbsp;·&nbsp; MASC 520 – Project 4 · USC Spring 2026</p>
+
+        <div class="tag-list">
+            <span class="tag">Autoencoder</span>
+            <span class="tag">VAE</span>
+            <span class="tag">Fashion-MNIST</span>
+            <span class="tag">PyTorch</span>
+            <span class="tag">Generative Modeling</span>
+            <span class="tag">t-SNE</span>
+            <span class="tag">Latent Space</span>
+            <span class="tag">KL Divergence</span>
+        </div>
+
+        <!-- Overview -->
+        <div class="project-section">
+            <h2>Overview</h2>
+            <div class="highlight-box">
+                Autoencoders (AE) and Variational Autoencoders (VAE) compared on Fashion-MNIST (70,000 images,
+                10 classes). Both compress 784-dimensional images into a low-dimensional latent space.
+                Key findings: AE achieves lower reconstruction error (MSE 0.032 at dim 32); VAE produces
+                a structured latent space enabling <strong>reliable generative sampling</strong>.
+            </div>
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-value">0.032</div>
+                    <div class="metric-label">AE Best Test MSE (dim 32)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">28.4</div>
+                    <div class="metric-label">VAE Best ELBO (dim 32)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">dim 32</div>
+                    <div class="metric-label">Best Latent Dimension</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">5×10⁻⁴</div>
+                    <div class="metric-label">Optimal Learning Rate</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Architecture -->
+        <div class="project-section">
+            <h2>Architecture</h2>
+            <img src="images/MASC520_P4_fig1.png" alt="Figure 1: AE and VAE architecture" class="project-image">
+            <p class="fig-caption">Figure 1: Autoencoder (AE) and Variational Autoencoder (VAE) architecture diagram</p>
+
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <h4>Autoencoder (AE)</h4>
+                    <ul>
+                        <li>Encoder: 784 → 512 → 256 → z (ReLU)</li>
+                        <li>Decoder: z → 256 → 512 → 784 (Tanh)</li>
+                        <li>Encoder outputs a single fixed vector z</li>
+                        <li>Loss: MSE reconstruction</li>
+                    </ul>
+                </div>
+                <div class="compare-card">
+                    <h4>Variational Autoencoder (VAE)</h4>
+                    <ul>
+                        <li>Same encoder-decoder backbone</li>
+                        <li>Encoder outputs μ and log σ² (two parallel heads)</li>
+                        <li>Sample z = μ + ε·σ (reparameterization trick)</li>
+                        <li>Loss: MSE + KL divergence (β=1)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="project-description">
+                <p>Both models use Adam optimizer, mini-batch size 128, 30 epochs. Images normalized to [−1, 1] to match Tanh output.
+                Training set (60,000) split 90/10 into train (54,000) and validation (6,000); test set (10,000) held out.</p>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="project-section">
+            <h2>Results</h2>
+
+            <h3>Loss Curves</h3>
+            <img src="images/MASC520_P4_fig2.png" alt="Figure 2: Training and validation loss curves" class="project-image">
+            <p class="fig-caption">Figure 2: Training and Validation loss over 30 epochs — AE (left) and VAE (right) at baseline (dim=16, lr=1×10⁻³)</p>
+            <div class="project-description">
+                <p>Both models converge smoothly with no overfitting. At baseline: AE test MSE = 0.039, VAE test ELBO = 34.23.
+                   These values are not directly comparable since the VAE's ELBO includes the KL term.</p>
+            </div>
+
+            <h3>Reconstructions</h3>
+            <img src="images/MASC520_P4_fig3.png" alt="Figure 3: Reconstructions" class="project-image">
+            <p class="fig-caption">Figure 3: Original images (top) and reconstructions (bottom) — AE (left) and VAE (right)</p>
+            <div class="project-description">
+                <p>Both models recover the overall shape and class of each garment. AE outputs are slightly sharper;
+                   VAE outputs are mildly smoother due to the KL penalty spreading the latent posterior.</p>
+            </div>
+
+            <h3>Hyperparameter Analysis — Latent Dimension &amp; Learning Rate</h3>
+            <img src="images/MASC520_P4_fig4.png" alt="Figure 4: Test loss vs hyperparameters" class="project-image">
+            <p class="fig-caption">Figure 4: Test Loss vs. Latent Dimension (left) and Test Loss vs. Learning Rate (right)</p>
+
+            <table>
+                <thead>
+                    <tr><th>Latent Dim</th><th>AE Test MSE</th><th>VAE ELBO</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>2</td><td>0.097</td><td>79.9</td></tr>
+                    <tr><td>8</td><td>0.050</td><td>43.0</td></tr>
+                    <tr><td>16</td><td>0.039</td><td>34.6</td></tr>
+                    <tr><td>32</td><td><strong>0.032</strong></td><td><strong>28.4</strong></td></tr>
+                </tbody>
+            </table>
+            <div class="project-description">
+                <p>The largest gain occurs between dim 2 and 8; gains diminish beyond 16.
+                   Optimal learning rate: 5×10⁻⁴–1×10⁻³ (under-converged at 1×10⁻⁴, overshoots at 3×10⁻³).</p>
+            </div>
+
+            <h3>Latent Space Visualization (t-SNE)</h3>
+            <img src="images/MASC520_P4_fig5.png" alt="Figure 5: t-SNE projections" class="project-image">
+            <p class="fig-caption">Figure 5: t-SNE of 3,000 test encodings — AE latent space (left) and VAE latent space (right)</p>
+            <div class="project-description">
+                <p>The AE latent space is fragmented — class clusters overlap with empty voids between them.
+                   The VAE latent space is denser and more organized, with cleaner class separation due to KL regularization.</p>
+            </div>
+
+            <h3>VAE Generated Samples</h3>
+            <img src="images/MASC520_P4_fig6.png" alt="Figure 6: VAE generated samples" class="project-image">
+            <p class="fig-caption">Figure 6: 16 samples generated by the VAE from N(0,I) prior — visually coherent clothing silhouettes</p>
+            <div class="project-description">
+                <p>The VAE's structured prior supports reliable generation. Sampling z~N(0,I) produces
+                   plausible clothing images, confirming the continuous, well-organized latent space.
+                   The AE cannot do this — its unstructured latent space does not guarantee valid decodings between training points.</p>
+            </div>
+        </div>
+
+        <!-- Conclusion -->
+        <div class="project-section">
+            <h2>Conclusion</h2>
+            <div class="project-description">
+                <ul>
+                    <li>The AE achieved <strong>lower reconstruction error</strong> (MSE 0.032 at dim 32) due to unconstrained optimization — preferable for discriminative tasks.</li>
+                    <li>The VAE's KL regularization produced a <strong>smoother, more organized latent space</strong> that enables reliable generation — essential for generative tasks.</li>
+                    <li>Best latent dimension was 32, though gains beyond 16 were diminishing.</li>
+                    <li>Optimal learning rate range: 5×10⁻⁴–1×10⁻³ — consistent for both models.</li>
+                    <li>Future work: convolutional encoders, β-VAE, or conditional generation.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

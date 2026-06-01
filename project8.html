@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RNN GRU LSTM Time Series - Hojung Lim</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #0366d6;
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-size: 1em;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: #0256b9; text-decoration: underline; }
+
+        h1 { font-size: 2em; color: #333; margin-bottom: 10px; }
+        .subtitle { color: #777; font-size: 1em; margin-bottom: 30px; }
+
+        .tag-list { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
+        .tag {
+            background-color: #e8f4ff;
+            color: #0366d6;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .project-section { margin-bottom: 50px; }
+
+        .project-image {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .project-image-half {
+            width: 60%;
+            display: block;
+            margin: 0 auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .project-image-half { width: 100%; }
+        }
+
+        .fig-caption {
+            text-align: center;
+            font-size: 0.85em;
+            color: #888;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .project-description { font-size: 1em; color: #555; margin-bottom: 20px; }
+        .project-description p { margin-bottom: 10px; }
+
+        h2 {
+            font-size: 1.6em;
+            color: #333;
+            margin-bottom: 15px;
+            margin-top: 30px;
+            border-left: 4px solid #0366d6;
+            padding-left: 12px;
+        }
+
+        h3 { font-size: 1.15em; color: #444; margin-bottom: 10px; margin-top: 20px; }
+
+        .highlight-box {
+            background-color: #f0f7ff;
+            border-left: 4px solid #0366d6;
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .metric-card {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+        .metric-value { font-size: 1.4em; font-weight: bold; color: #0366d6; }
+        .metric-label { font-size: 0.82em; color: #777; margin-top: 4px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        th {
+            background-color: #0366d6;
+            color: white;
+            padding: 10px 12px;
+            text-align: left;
+        }
+        td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
+        }
+        tr:nth-child(even) td { background-color: #f8f9fa; }
+        tr.best td { font-weight: bold; background-color: #e8f4ff !important; color: #0366d6; }
+
+        ul, ol { padding-left: 22px; color: #555; }
+        ul li, ol li { margin-bottom: 6px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Home</a>
+
+        <h1>Comparative Analysis of RNN, GRU, and LSTM for Airline Passenger Time Series Forecasting</h1>
+        <p class="subtitle">Hojung Lim &nbsp;·&nbsp; MASC 520 – Project 3 · USC Spring 2026</p>
+
+        <div class="tag-list">
+            <span class="tag">RNN</span>
+            <span class="tag">GRU</span>
+            <span class="tag">LSTM</span>
+            <span class="tag">Time Series</span>
+            <span class="tag">PyTorch</span>
+            <span class="tag">Forecasting</span>
+            <span class="tag">Hyperparameter Tuning</span>
+        </div>
+
+        <!-- Overview -->
+        <div class="project-section">
+            <h2>Overview</h2>
+            <div class="highlight-box">
+                Vanilla RNN, GRU, and LSTM compared on the International Airline Passengers dataset
+                (144 monthly counts, 1949–1960). A baseline (Test 1) vs. an improved training regime
+                (Test 2) shows that <strong>training methodology — not just architecture — determines
+                whether a theoretically stronger model delivers better results</strong>.
+                Best result: LSTM RMSE = <strong>33.17</strong> (Test 2, lr=0.005).
+            </div>
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-value">33.17</div>
+                    <div class="metric-label">Best RMSE (LSTM, Test 2)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">52%</div>
+                    <div class="metric-label">LSTM Improvement over Baseline</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">64</div>
+                    <div class="metric-label">Optimal Hidden Units</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">lr = 0.005</div>
+                    <div class="metric-label">Optimal Learning Rate</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Method -->
+        <div class="project-section">
+            <h2>Method</h2>
+            <img src="images/MASC520_P3_fig1.png" alt="Figure 1: Network Architecture" class="project-image-half">
+            <p class="fig-caption">Figure 1: Shared recurrent network architecture — 64 hidden units, dropout, FC output</p>
+            <div class="project-description">
+                <p>All three models share the same structure: a recurrent layer with <strong>64 hidden units</strong>,
+                   a dropout layer (rate=0.0), and a fully connected output layer producing a single scalar.
+                   The vanilla RNN uses tanh activation; GRU and LSTM use gating mechanisms.</p>
+                <p>Dataset: 144 monthly passenger counts normalized to [0,1] with min-max scaling.
+                   Sliding window of length 12 (matching the seasonal period) creates input-output pairs.
+                   80/20 temporal split: 105 training sequences, 27 validation sequences.</p>
+            </div>
+
+            <h3>Training Configurations</h3>
+            <table>
+                <thead>
+                    <tr><th>Hyperparameter</th><th>Test 1 (Baseline)</th><th>Test 2 (Improved)</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Epochs</td><td>150</td><td>300</td></tr>
+                    <tr><td>Learning Rate</td><td>0.001</td><td>0.005</td></tr>
+                    <tr><td>Batch Size</td><td>16</td><td>16</td></tr>
+                    <tr><td>Optimizer</td><td>Adam</td><td>Adam</td></tr>
+                    <tr><td>LR Scheduler</td><td>None</td><td>Plateau-based adaptive</td></tr>
+                    <tr><td>Best-Model Checkpointing</td><td>No</td><td>Yes</td></tr>
+                    <tr><td>Gradient Clipping</td><td>Max norm 1.0</td><td>Max norm 1.0</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Results -->
+        <div class="project-section">
+            <h2>Results</h2>
+
+            <h3>Loss Curves — Test 1 (Baseline)</h3>
+            <img src="images/MASC520_P3_fig2a.png" alt="Figure 2A: Test 1 loss curves" class="project-image">
+            <p class="fig-caption">Figure 2A: Training and Validation Loss Curves — RNN, GRU, LSTM (Test 1, seq_len=12, hidden=64, lr=0.001)</p>
+
+            <h3>Loss Curves — Test 2 (Improved)</h3>
+            <img src="images/MASC520_P3_fig2b.png" alt="Figure 2B: Test 2 loss curves" class="project-image">
+            <p class="fig-caption">Figure 2B: Training and Validation Loss Curves — RNN, GRU, LSTM (Test 2, seq_len=12, hidden=64, lr=0.001)</p>
+
+            <h3>Predictions vs. Actual</h3>
+            <img src="images/MASC520_P3_fig3.png" alt="Figure 3: Predictions vs. actual" class="project-image">
+            <p class="fig-caption">Figure 3: Predictions vs. Actual Passengers — Validation Set (Test 2, lr=0.001)</p>
+
+            <h3>Hyperparameter Analysis — Learning Rate</h3>
+            <table>
+                <thead>
+                    <tr><th>Learning Rate</th><th>Test 1 RMSE</th><th>Test 1 MAE</th><th>Test 2 RMSE</th><th>Test 2 MAE</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>0.0001</td><td>76.71</td><td>67.14</td><td>74.61</td><td>59.87</td></tr>
+                    <tr><td>0.001</td><td>69.64</td><td>57.61</td><td>49.50</td><td>36.46</td></tr>
+                    <tr class="best"><td>0.005 ★</td><td>46.83</td><td>39.08</td><td><strong>33.17</strong></td><td>27.67</td></tr>
+                    <tr><td>0.01</td><td>61.25</td><td>51.40</td><td>37.15</td><td>28.83</td></tr>
+                </tbody>
+            </table>
+            <div class="project-description">
+                <p>lr=0.005 + adaptive scheduler achieves the best RMSE of 33.17. The scheduler amplifies
+                   the benefit of a correct learning rate while providing robustness against suboptimal choices.</p>
+            </div>
+
+            <h3>Hyperparameter Analysis — Hidden Size</h3>
+            <table>
+                <thead>
+                    <tr><th>Hidden Units</th><th>Parameters</th><th>Test 1 RMSE</th><th>Test 1 MAE</th><th>Test 2 RMSE</th><th>Test 2 MAE</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>16</td><td>1,233</td><td>66.11</td><td>48.58</td><td>46.92</td><td>37.72</td></tr>
+                    <tr><td>32</td><td>4,513</td><td>61.53</td><td>44.81</td><td>37.63</td><td>31.71</td></tr>
+                    <tr class="best"><td>64 ★</td><td>17,217</td><td>69.64</td><td>57.61</td><td><strong>33.17</strong></td><td>27.67</td></tr>
+                    <tr><td>128</td><td>67,201</td><td>44.72</td><td>38.63</td><td>37.62</td><td>32.11</td></tr>
+                </tbody>
+            </table>
+            <div class="project-description">
+                <p>In Test 2, RMSE improves steadily from 16 to 64 hidden units, then worsens at 128 due to
+                   overfitting on just 105 training sequences. 64 units provides the right capacity for this small dataset.</p>
+            </div>
+        </div>
+
+        <!-- Conclusion -->
+        <div class="project-section">
+            <h2>Conclusion</h2>
+            <div class="project-description">
+                <ul>
+                    <li>In Test 1 (baseline), the LSTM performed <em>worst</em> (RMSE=69.64) despite its architectural advantage — a fixed learning rate fails to navigate its complex loss landscape.</li>
+                    <li>In Test 2 (adaptive scheduler + extended training + checkpointing), the LSTM recovered to RMSE=33.17 — the best result overall and a <strong>52% improvement</strong> over its own baseline.</li>
+                    <li>Architecture alone does not determine performance; a more powerful model requires a training regime capable of exploiting its capacity.</li>
+                    <li>Optimal configuration: LSTM, lr=0.005, 64 hidden units, 300 epochs, plateau-based LR scheduler.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
