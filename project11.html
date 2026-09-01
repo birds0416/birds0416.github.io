@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snore Detector — On-Device iOS Snoring Detection - Hojung Lim</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #0366d6;
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-size: 1em;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #0256b9;
+            text-decoration: underline;
+        }
+
+        .title-row {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 10px;
+        }
+
+        .app-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+            flex-shrink: 0;
+        }
+
+        h1 {
+            font-size: 2em;
+            color: #333;
+        }
+
+        .authors {
+            color: #777;
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+
+        .project-section {
+            margin-bottom: 50px;
+        }
+
+        .project-image {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .project-image-half {
+            width: 50%;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /*
+          Phone screenshot layout.
+          .phone-row holds 1-3 iPhone screenshots side by side, centered,
+          and stacks them vertically on narrow screens.
+        */
+        .phone-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .phone-shot {
+            width: 240px;
+            max-width: 100%;
+            border-radius: 18px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.14);
+        }
+
+        .watch-shot {
+            width: 150px;
+            max-width: 100%;
+            border-radius: 22px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.14);
+        }
+
+        .figure-caption {
+            font-size: 0.85em;
+            color: #888;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .image-row {
+                flex-direction: column;
+            }
+            .project-image-half {
+                width: 100%;
+            }
+            .title-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        .project-description {
+            font-size: 1em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .project-description p {
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6em;
+            color: #333;
+            margin-bottom: 15px;
+            margin-top: 30px;
+            border-left: 4px solid #0366d6;
+            padding-left: 12px;
+        }
+
+        h3 {
+            font-size: 1.2em;
+            color: #444;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .tag {
+            background-color: #e8f4ff;
+            color: #0366d6;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .highlight-box {
+            background-color: #f0f7ff;
+            border-left: 4px solid #0366d6;
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        .warning-box {
+            background-color: #fff8f0;
+            border-left: 4px solid #e08a1e;
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #0366d6;
+        }
+
+        .metric-label {
+            font-size: 0.85em;
+            color: #777;
+            margin-top: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+        }
+
+        th {
+            background-color: #0366d6;
+            color: white;
+            padding: 10px 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 9px 14px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f8f9fa;
+        }
+
+        .pipeline-block {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 14px 18px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.88em;
+            color: #333;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            padding: 1px 5px;
+            font-size: 0.92em;
+            color: #333;
+        }
+
+        .doc-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .pdf-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #0366d6;
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #f0f0f0;
+            border-radius: 6px;
+            font-size: 0.95em;
+            transition: background-color 0.3s;
+        }
+
+        .pdf-link:hover {
+            background-color: #e0e0e0;
+            text-decoration: underline;
+        }
+
+        .repo-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #24292f;
+            text-decoration: none;
+            padding: 10px 18px;
+            background-color: #f0f0f0;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            font-size: 0.95em;
+            font-weight: 500;
+            margin-bottom: 30px;
+            transition: background-color 0.3s;
+        }
+
+        .repo-link:hover {
+            background-color: #e4e8ec;
+        }
+
+        .repo-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        ul, ol {
+            padding-left: 22px;
+            color: #555;
+        }
+
+        ul li, ol li {
+            margin-bottom: 8px;
+        }
+
+        .result-badge {
+            display: inline-block;
+            background: #e8f4ff;
+            color: #0366d6;
+            border-radius: 6px;
+            padding: 3px 10px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .result-badge.done {
+            background: #eaf7ee;
+            color: #1a7f37;
+        }
+
+        .result-badge.fail {
+            background: #fff0f0;
+            color: #cc3333;
+        }
+
+        .stage-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 18px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .stage-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .stage-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Home</a>
+
+        <div class="title-row">
+            <img src="images/SnoreDetector_appicon.png" alt="Snore Detector app icon" class="app-icon">
+            <h1>Snore Detector — On-Device Overnight Snoring Detection for iOS</h1>
+        </div>
+        <p class="authors">Hojung Lim &nbsp;·&nbsp; Personal iOS project, 2026 &nbsp;·&nbsp; Swift, SwiftUI, Core ML, HealthKit, watchOS</p>
+
+        <div class="tag-list">
+            <span class="tag">Swift</span>
+            <span class="tag">SwiftUI</span>
+            <span class="tag">Core ML</span>
+            <span class="tag">Create ML</span>
+            <span class="tag">SoundAnalysis</span>
+            <span class="tag">AVAudioEngine</span>
+            <span class="tag">SwiftData</span>
+            <span class="tag">HealthKit</span>
+            <span class="tag">watchOS</span>
+            <span class="tag">On-Device ML</span>
+        </div>
+
+        <a href="https://github.com/birds0416/SnoreDetector" target="_blank" class="repo-link">
+            <img src="images/github-icon.png" alt="GitHub" class="repo-icon">
+            birds0416 / SnoreDetector
+        </a>
+
+        <!-- ============================================================
+             Overview
+             ============================================================ -->
+        <div class="project-section">
+            <h2>Project Overview</h2>
+            <div class="highlight-box">
+                A free, fully on-device iPhone app that listens all night, detects snoring in real time
+                with a purpose-trained Core ML model, and saves <strong>only</strong> the audio segments
+                where snoring occurred — with timestamps. It then correlates those episodes against Apple
+                Health sleep stages to show <em>when</em> in the night snoring happened. No servers, no
+                subscriptions, no network access at all.
+            </div>
+            <div class="project-description">
+                <p>
+                    The project started as a free alternative to subscription apps like SnoreLab, inspired
+                    by Tareq Khan's paper <em>"A Deep Learning Model for Snoring Detection and Vibration
+                    Notification Using a Smart Wearable Gadget"</em> — a CNN trained on MFCC features of
+                    1-second audio clips reaching 96% accuracy on a 1,000-sample dataset.
+                </p>
+                <p>
+                    It grew from a solo snore recorder into a <strong>snoring × sleep-stage analyzer</strong>
+                    with an Apple Watch remote, and along the way ran into an iOS 18 platform restriction
+                    that broke the entire premise of the app — detection while the screen is locked. Fixing
+                    that is the most interesting engineering story here, and it is what pulled the custom
+                    Create ML model forward from "optional upgrade path" to "required".
+                </p>
+            </div>
+
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-value">100%</div>
+                    <div class="metric-label">Create ML train / validation accuracy (paper's CNN: 96%)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">4.8 KB</div>
+                    <div class="metric-label">Exported Core ML model size</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">3 nights</div>
+                    <div class="metric-label">Real overnight sessions validated on device</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">0 bytes</div>
+                    <div class="metric-label">Data leaving the device — no networking at all</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SCREENSHOT SET 1 — App overview / hero shots
+             ============================================================
+             TODO (Roy): add 3 iPhone screenshots here as an overview row.
+             Recommended: Record tab (session running) · History session detail ·
+             Analysis tab timeline. Save them into images/ with these names,
+             then delete this comment block and uncomment the markup below.
+
+        <div class="phone-row">
+            <img src="images/SnoreDetector_record.png" alt="Record tab with a session running" class="phone-shot">
+            <img src="images/SnoreDetector_history_detail.png" alt="Session detail with night timeline and waveform scrubber" class="phone-shot">
+            <img src="images/SnoreDetector_analysis.png" alt="Analysis tab with sleep-stage timeline and snore overlays" class="phone-shot">
+        </div>
+        <p class="figure-caption">The three main screens: live recording, per-night review with waveform playback, and snoring correlated against Apple Health sleep stages.</p>
+             ============================================================ -->
+
+        <!-- ============================================================
+             Tech stack
+             ============================================================ -->
+        <div class="project-section">
+            <h2>Tech Stack</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Area</th>
+                        <th>Tooling</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Platform</td>
+                        <td>iOS 17+ (iPhone) and watchOS, Swift + SwiftUI</td>
+                    </tr>
+                    <tr>
+                        <td>Audio capture</td>
+                        <td><code>AVAudioEngine</code> input tap, <code>AVAudioSession</code> in <code>.record</code> with the <code>audio</code> + <code>processing</code> background modes</td>
+                    </tr>
+                    <tr>
+                        <td>ML inference</td>
+                        <td>Custom Create ML sound classifier, run through <code>SNAudioStreamAnalyzer</code> forced to CPU-only compute units</td>
+                    </tr>
+                    <tr>
+                        <td>Persistence</td>
+                        <td>SwiftData (<code>SleepSession</code> → <code>SnoreEvent</code>), audio clips as AAC <code>.m4a</code> in the app's Documents folder</td>
+                    </tr>
+                    <tr>
+                        <td>Health data</td>
+                        <td>HealthKit, read-only <code>sleepAnalysis</code> category samples</td>
+                    </tr>
+                    <tr>
+                        <td>Watch link</td>
+                        <td><code>WCSession</code> (WatchConnectivity) — Start/Stop remote only</td>
+                    </tr>
+                    <tr>
+                        <td>Charts</td>
+                        <td>Swift Charts</td>
+                    </tr>
+                    <tr>
+                        <td>Cost</td>
+                        <td>$0 infrastructure; no dependencies, no network calls</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ============================================================
+             Model decision
+             ============================================================ -->
+        <div class="project-section">
+            <h2>Model Decision</h2>
+            <div class="project-description">
+                <p>
+                    Before writing any app code, three approaches to the detection model were compared on
+                    accuracy, effort, real-time on-device feasibility, and cost.
+                </p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Option</th>
+                        <th>Accuracy</th>
+                        <th>Effort</th>
+                        <th>Real-time on device</th>
+                        <th>Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1. Train own CNN (the paper's approach)</td>
+                        <td>96% on the paper's dataset; a Create ML route on the same data lands in a similar ballpark</td>
+                        <td>Medium — but low via Create ML on the free dataset, since no data collection is needed</td>
+                        <td>Yes (Core ML)</td>
+                        <td>$0</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2. Apple's built-in SoundAnalysis classifier</strong> ⭐</td>
+                        <td>Good — trained on a massive corpus, robust in the real world, exact figure unpublished</td>
+                        <td>Minimal — no training at all</td>
+                        <td>Yes — designed for exactly this</td>
+                        <td>$0</td>
+                    </tr>
+                    <tr>
+                        <td>3. Paid model or dataset under $10</td>
+                        <td>No clear candidate better than the free options</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>Rejected</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="project-description">
+                <p>
+                    <strong>Decision: start with Option 2, keep Option 1 as the upgrade path.</strong>
+                    Apple's <code>SNClassifySoundRequest</code> built-in classifier recognizes 300+ sound
+                    classes including <code>snoring</code> (plus <code>breathing</code>,
+                    <code>cough</code>, <code>speech</code>, and <code>silence</code>, useful for
+                    filtering), runs fully on-device in real time, and needs zero training.
+                </p>
+                <p>
+                    The reasoning: <strong>the surrounding pipeline is identical regardless of which model
+                    sits inside it.</strong> Starting with the built-in classifier meant the entire core
+                    function — audio session, stream analyzer, event segmentation, clip saving, timeline —
+                    could be built and tested immediately, then A/B'd against a custom model later using
+                    real overnight recordings as test data. A decision based on evidence rather than
+                    guesses.
+                </p>
+                <p>
+                    YAMNet also has a snoring class, but a TensorFlow → Core ML conversion is extra effort
+                    for no advantage over Apple's built-in model, so it was rejected.
+                </p>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             Core pipeline
+             ============================================================ -->
+        <div class="project-section">
+            <h2>Core Detection Pipeline</h2>
+
+            <div class="pipeline-block">AVAudioEngine tap ──► SNAudioStreamAnalyzer ──► hysteresis segmenter ──► AAC .m4a clip
+   (live PCM)          (CPU-only Core ML)      (start/end events)     (pre-roll + event audio)
+                                                       │
+                                                       └──► SwiftData: SleepSession → SnoreEvent</div>
+
+            <ol>
+                <li>
+                    <strong>Audio capture.</strong> An <code>AVAudioSession</code> in <code>.record</code>
+                    plus the <code>audio</code> background mode keeps the microphone running with the screen
+                    locked all night. An <code>AVAudioEngine</code> input-node tap delivers live PCM
+                    buffers, which are deep-copied before asynchronous use because the system reuses the
+                    tap's buffer.
+                </li>
+                <li>
+                    <strong>Real-time classification.</strong> Buffers feed an
+                    <code>SNAudioStreamAnalyzer</code> with 50% window overlap. A window counts as a snore
+                    hit when the <code>snoring</code> label's confidence clears the threshold (0.6 by
+                    default).
+                </li>
+                <li>
+                    <strong>Event segmentation by hysteresis.</strong> An episode <em>starts</em> after 2
+                    consecutive positive windows, which rejects one-off false positives, and <em>ends</em>
+                    after 10 seconds without a positive window, which merges individual snores (typically
+                    3–6 seconds apart) into one natural snoring episode rather than hundreds of fragments.
+                </li>
+                <li>
+                    <strong>Clip saving with pre-roll.</strong> A rolling in-memory ring buffer holds the
+                    last 10 seconds of audio. When an episode starts, the buffer is flushed into a fresh
+                    AAC <code>.m4a</code> file and live audio streams in until the episode ends — so the
+                    first snore that triggered detection is actually in the recording. Event start times are
+                    backdated to cover the trigger windows.
+                    <strong>Non-snoring audio is never written to disk</strong>, for both privacy and
+                    storage reasons.
+                </li>
+                <li>
+                    <strong>Persistence and review.</strong> Each episode becomes a SwiftData
+                    <code>SnoreEvent</code> (start, end, peak confidence, clip filename) belonging to a
+                    <code>SleepSession</code>. Deleting a session cascades to its events and removes its
+                    clip folder from disk.
+                </li>
+            </ol>
+
+            <div class="project-description">
+                <p>
+                    Phone calls and Siri are handled explicitly: the engine observes
+                    <code>AVAudioSession.interruptionNotification</code> and automatically restarts the
+                    engine when the interruption ends with the <code>.shouldResume</code> option — otherwise
+                    a 2 a.m. phone call would silently end the night's recording.
+                </p>
+            </div>
+
+            <h3>Tuning knobs</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Default</th>
+                        <th>Effect</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>confidenceThreshold</code></td>
+                        <td>0.6</td>
+                        <td>Raise if false positives, lower if snores are missed</td>
+                    </tr>
+                    <tr>
+                        <td><code>endHangover</code></td>
+                        <td>10 s</td>
+                        <td>How much silence ends an episode</td>
+                    </tr>
+                    <tr>
+                        <td><code>consecutiveToStart</code></td>
+                        <td>2 windows</td>
+                        <td>Debounce before an episode starts</td>
+                    </tr>
+                    <tr>
+                        <td><code>preRollDuration</code></td>
+                        <td>10 s</td>
+                        <td>Audio kept in memory before the detection trigger</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ============================================================
+             The locked-screen bug — headline finding
+             ============================================================ -->
+        <div class="project-section">
+            <h2>The Locked-Screen Bug — and Why the Custom Model Became Mandatory</h2>
+
+            <div class="warning-box">
+                <strong>The bug that invalidated the whole app.</strong> Locking the screen — which
+                everyone does while sleeping — stopped all detection. The microphone stayed on and the
+                session ran all night, but there were zero detections on waking.
+            </div>
+
+            <div class="project-description">
+                <p>
+                    The root cause turned out to be a known iOS 18 platform restriction rather than a bug in
+                    the app. <strong>Apple's built-in SoundAnalysis classifier runs on the GPU, and iOS
+                    forbids GPU work from backgrounded or locked apps.</strong> Every single classification
+                    window was failing silently with
+                    <code>kIOGPUCommandBufferCallbackErrorBackgroundExecutionNotPermitted</code>. It worked
+                    on iOS 15–17 and has been broken since iOS 18.
+                </p>
+                <p>
+                    This promoted the "optional upgrade path" — a custom Create ML model — into a hard
+                    requirement, because <strong>CPU inference <em>is</em> permitted in the
+                    background</strong>. The fix, in two rounds:
+                </p>
+            </div>
+
+            <h3>Round 1 — a custom CPU-only model</h3>
+            <div class="project-description">
+                <p>
+                    Kaggle was blocked, but the paper's own dataset (16 kHz version) is mirrored in the
+                    <code>adrianagaler/Snoring-Detection</code> GitHub repo, so 500 snoring and 500
+                    non-snoring 1-second clips were pulled via sparse checkout. A Create ML Sound
+                    Classification model (Audio Feature Print, 0.975 s windows, 50% overlap) converged at
+                    <strong>14 iterations with 100% training and 100% validation accuracy</strong>, exporting
+                    to a <strong>4.8 KB</strong> <code>.mlmodel</code>.
+                </p>
+                <p>
+                    The engine now loads it with <code>MLModelConfiguration.computeUnits = .cpuOnly</code>
+                    and passes it to <code>SNClassifySoundRequest(mlModel:)</code>, falling back to the
+                    built-in classifier (foreground-only, with a warning in the debug log) if the model
+                    isn't bundled. <strong>Retest: still failed when locked.</strong> The Create ML export
+                    is a two-stage pipeline — Audio Feature Print feeding a classifier — and stage 0 was
+                    still being denied compute in the background.
+                </p>
+            </div>
+
+            <h3>Round 2 — the missing background mode</h3>
+            <div class="project-description">
+                <p>
+                    The fix, confirmed by the Apple developer forums, was to add
+                    <strong><code>processing</code> to <code>UIBackgroundModes</code> alongside
+                    <code>audio</code></strong>. One developer reported a 14-hour locked-screen run on iOS
+                    18.2 after this change. Applied, rebuilt, deployed — and locked-screen detection worked.
+                </p>
+                <p>
+                    <strong>The unexpected upside:</strong> the app is no longer dependent on Apple's
+                    generic 300-class model. The detector is now purpose-trained on the reference paper's
+                    own snoring dataset, in a 4.8 KB model, and it happens to be the only configuration that
+                    works in the background at all.
+                </p>
+            </div>
+
+            <div class="highlight-box">
+                <strong>Lesson:</strong> a platform's compute-placement policy is a functional requirement,
+                not an implementation detail. The "zero effort" model choice was the right call for building
+                the pipeline fast, but it was silently incompatible with the app's single most important
+                usage condition — and the failure mode was invisible, because the microphone kept working
+                and the session looked healthy the whole night.
+            </div>
+        </div>
+
+        <!-- ============================================================
+             Feature tour
+             ============================================================ -->
+        <div class="project-section">
+            <h2>Feature Tour</h2>
+            <div class="project-description">
+                <p>Four tabs on the phone, plus a Watch companion.</p>
+            </div>
+
+            <h3>Record tab</h3>
+            <div class="project-description">
+                <p>
+                    One large Start/Stop button, an elapsed session clock, a live snoring-confidence meter
+                    with the current threshold shown beneath it, tonight's episode list as it accumulates,
+                    an Apple Watch connection indicator, and a toggleable debug log that was invaluable for
+                    diagnosing the locked-screen failure.
+                </p>
+            </div>
+
+            <!-- ============================================================
+                 SCREENSHOT — Record tab
+                 ============================================================
+                 TODO (Roy): 1-2 screenshots of the Record tab.
+                 Ideal pair: (a) idle "Ready" state, (b) running session showing
+                 the elapsed clock, "Snoring detected" / "Listening…" status, the
+                 confidence meter, and at least one episode in tonight's list.
+                 Save as images/SnoreDetector_record_idle.png and
+                 images/SnoreDetector_record.png, then uncomment:
+
+            <div class="phone-row">
+                <img src="images/SnoreDetector_record_idle.png" alt="Record tab, idle" class="phone-shot">
+                <img src="images/SnoreDetector_record.png" alt="Record tab, session running with confidence meter" class="phone-shot">
+            </div>
+            <p class="figure-caption">Left: ready to start. Right: a live session with the confidence meter and tonight's detected episodes.</p>
+                 ============================================================ -->
+
+            <h3>History tab</h3>
+            <div class="project-description">
+                <p>
+                    A list of past nights, each showing bedtime, wake time, and episode count. Opening a
+                    night gives three summary statistics (time in bed, total snoring time, and snoring as a
+                    percentage of the night), a horizontal <strong>night timeline strip</strong> with orange
+                    bars marking each snoring interval in its true position, and the full episode log with
+                    playback.
+                </p>
+                <p>
+                    Each episode row carries a <strong>waveform scrubber</strong>: the clip's real amplitude
+                    envelope rendered as 96 peak bins, voice-memo style, with a draggable playhead. Spikes
+                    in the waveform indicate loud moments, so you can drag straight to the snore instead of
+                    listening through the clip. Dragging works even before pressing play — scrubbing loads
+                    the clip paused. Waveforms are decoded off the main thread the first time a row appears
+                    and cached in memory, with placeholder bars while loading, so the list stays responsive.
+                </p>
+            </div>
+
+            <!-- ============================================================
+                 SCREENSHOT — History tab
+                 ============================================================
+                 TODO (Roy): 2 screenshots.
+                 (a) The session list showing a few recorded nights.
+                 (b) A session detail screen — this is the important one. Make
+                     sure the night timeline strip (orange bars) AND at least
+                     two episode rows with visible waveform scrubbers are in
+                     frame. Ideally one clip mid-playback so the orange progress
+                     fill and playhead are visible.
+                 Save as images/SnoreDetector_history_list.png and
+                 images/SnoreDetector_history_detail.png, then uncomment:
+
+            <div class="phone-row">
+                <img src="images/SnoreDetector_history_list.png" alt="History tab session list" class="phone-shot">
+                <img src="images/SnoreDetector_history_detail.png" alt="Session detail with night timeline strip and waveform scrubbers" class="phone-shot">
+            </div>
+            <p class="figure-caption">Left: recorded nights. Right: night statistics, the timeline strip, and per-episode waveform playback.</p>
+                 ============================================================ -->
+
+            <h3>Analysis tab — snoring × sleep stages</h3>
+            <div class="project-description">
+                <p>
+                    The core deliverable of the second phase. Pick a night, and the app overlays that
+                    night's snoring intervals onto the Apple Health sleep-stage timeline.
+                </p>
+            </div>
+
+            <div class="stage-legend">
+                <span class="stage-chip"><span class="stage-dot" style="background:#ff6b57;"></span>Awake</span>
+                <span class="stage-chip"><span class="stage-dot" style="background:#52c7fa;"></span>REM</span>
+                <span class="stage-chip"><span class="stage-dot" style="background:#0f75ff;"></span>Core</span>
+                <span class="stage-chip"><span class="stage-dot" style="background:#4740ad;"></span>Deep</span>
+                <span class="stage-chip"><span class="stage-dot" style="background:rgba(255,149,0,0.5);border-radius:2px;"></span>Snoring overlay</span>
+            </div>
+
+            <ul>
+                <li><strong>Combined timeline</strong> — four sleep-stage lanes in Apple Health's own colour palette, with translucent orange snore stripes overlaid across all lanes by timestamp. Tapping a stripe highlights it and jumps to that episode.</li>
+                <li><strong>Per-stage statistics</strong> — snoring minutes, percentage of that stage spent snoring, and average peak confidence as an intensity proxy, for Awake vs REM vs Core vs Deep.</li>
+                <li><strong>Swift Charts bar chart</strong> — snoring minutes per sleep stage, colour-matched to the timeline lanes.</li>
+                <li><strong>Episode list with playback</strong> — each episode tagged with the stage it mostly occurred in, using the same waveform scrubber built for History.</li>
+            </ul>
+
+            <div class="project-description">
+                <p>
+                    Two details that mattered more than expected. First, snore episodes that
+                    <strong>span a stage boundary are split proportionally</strong> across the stages they
+                    overlap, rather than being assigned wholesale to whichever stage they started in.
+                    Second, sessions are matched to nights by <strong>actual sample time-range
+                    overlap rather than calendar day</strong>, so a session that crosses midnight pairs with
+                    the right night automatically.
+                </p>
+            </div>
+
+            <!-- ============================================================
+                 SCREENSHOT — Analysis tab  (most important set)
+                 ============================================================
+                 TODO (Roy): 2-3 screenshots. This is the flagship feature, so
+                 pick a night with plenty of snoring AND Apple Watch stage data.
+                 (a) The combined night timeline: 4 coloured stage lanes with
+                     orange snore stripes and the stage legend visible. If
+                     possible, tap one stripe first so a highlighted episode is
+                     in frame.
+                 (b) The "Snoring by sleep stage" bar chart plus the per-stage
+                     stats rows underneath (minutes / % / avg intensity).
+                 (c) Optional: the episode list with stage tags and a waveform.
+                 Save as images/SnoreDetector_analysis.png,
+                 images/SnoreDetector_analysis_chart.png, and optionally
+                 images/SnoreDetector_analysis_events.png, then uncomment:
+
+            <div class="phone-row">
+                <img src="images/SnoreDetector_analysis.png" alt="Analysis tab combined sleep-stage and snoring timeline" class="phone-shot">
+                <img src="images/SnoreDetector_analysis_chart.png" alt="Snoring minutes per sleep stage bar chart with per-stage statistics" class="phone-shot">
+            </div>
+            <p class="figure-caption">Left: sleep-stage lanes with snoring stripes overlaid by timestamp. Right: snoring minutes per stage, with percentage of stage and average intensity.</p>
+                 ============================================================ -->
+
+            <h3>Settings tab</h3>
+            <div class="project-description">
+                <p>
+                    A single reversible toggle gates the Apple Health integration. Turning it off stops all
+                    Health queries immediately and clears the cache, and the footer explains that access can
+                    also be revoked from the Health app itself. The About section states plainly that the
+                    detection model is custom, CPU, and on-device, and that audio storage is on-device only.
+                </p>
+                <p>
+                    A subtlety worth noting: <strong>iOS never tells an app whether Health <em>read</em>
+                    permission was denied</strong> — for privacy reasons, "denied" and "no data" look
+                    identical. The empty-state copy is written to account for that, pointing at the most
+                    likely cause (no Apple Watch worn during sleep) rather than asserting a permission
+                    problem.
+                </p>
+            </div>
+
+            <!-- ============================================================
+                 SCREENSHOT — Settings tab (optional, low priority)
+                 ============================================================
+                 TODO (Roy): optional. Screenshot of the Settings tab showing the
+                 Apple Health toggle with its explanatory footer and the About
+                 section. Save as images/SnoreDetector_settings.png, uncomment:
+
+            <div class="phone-row">
+                <img src="images/SnoreDetector_settings.png" alt="Settings tab with the reversible Apple Health toggle" class="phone-shot">
+            </div>
+            <p class="figure-caption">The Health integration is a single reversible toggle; turning it off stops every Health query.</p>
+                 ============================================================ -->
+
+            <h3>Apple Watch companion</h3>
+            <div class="project-description">
+                <p>
+                    A deliberately minimal remote: one big Start/Stop button, the elapsed timer mirrored
+                    from the phone, and an iPhone-connection indicator dot. <strong>The Watch never records
+                    audio</strong> — the iPhone stays the recorder.
+                </p>
+                <p>
+                    Making this work cleanly required refactoring start/stop out of the view and into a
+                    shared <code>RecordingCoordinator</code>, so that the phone UI and the Watch drive the
+                    <em>identical</em> code path for session creation, event persistence, and engine
+                    lifecycle. That matters because the Watch has to be able to start a session
+                    <strong>headlessly</strong>, when the app was woken in the background rather than opened
+                    by the user.
+                </p>
+                <p>
+                    The delivery model has two paths: when the Watch is reachable,
+                    <code>sendMessage</code> delivers commands instantly; when the phone app is backgrounded
+                    or not running, <code>transferUserInfo</code> queues the command and the system wakes
+                    the app to deliver it — which works precisely because of the <code>audio</code> and
+                    <code>processing</code> background modes added for the locked-screen fix. State is also
+                    pushed via <code>updateApplicationContext</code> so the Watch shows the correct state
+                    even if its app is opened much later.
+                </p>
+            </div>
+
+            <!-- ============================================================
+                 SCREENSHOT — Apple Watch app
+                 ============================================================
+                 TODO (Roy): 1-2 watch screenshots (use the watch-shot class, not
+                 phone-shot — it's sized narrower for the smaller screen).
+                 Ideal pair: (a) idle "Ready" with the iPhone-connected green dot,
+                 (b) running state showing "Recording on iPhone" and the elapsed
+                 timer. Save as images/SnoreDetector_watch_idle.png and
+                 images/SnoreDetector_watch.png, then uncomment:
+
+            <div class="phone-row">
+                <img src="images/SnoreDetector_watch_idle.png" alt="Watch app idle" class="watch-shot">
+                <img src="images/SnoreDetector_watch.png" alt="Watch app while the iPhone is recording" class="watch-shot">
+            </div>
+            <p class="figure-caption">The Watch is a pure remote — Start/Stop and mirrored status. Recording always happens on the iPhone.</p>
+                 ============================================================ -->
+        </div>
+
+        <!-- ============================================================
+             Milestones
+             ============================================================ -->
+        <div class="project-section">
+            <h2>Milestones</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Milestone</th>
+                        <th>Scope</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>M1</td>
+                        <td>App skeleton — microphone permission, background audio session, live classifier with confidence meter and debug log</td>
+                        <td><span class="result-badge done">Complete</span></td>
+                    </tr>
+                    <tr>
+                        <td>M2</td>
+                        <td>Event segmentation and timestamped clip saving with pre-roll</td>
+                        <td><span class="result-badge done">Complete</span></td>
+                    </tr>
+                    <tr>
+                        <td>M3</td>
+                        <td>SwiftData session store, timeline review screen with playback</td>
+                        <td><span class="result-badge done">Complete</span></td>
+                    </tr>
+                    <tr>
+                        <td>M4</td>
+                        <td>Real overnight testing and threshold tuning — 3 sessions on a physical iPhone</td>
+                        <td><span class="result-badge done">Complete</span></td>
+                    </tr>
+                    <tr>
+                        <td>M5</td>
+                        <td>Custom Create ML model (forced by the locked-screen bug) + read-only HealthKit integration with a reversible Settings toggle</td>
+                        <td><span class="result-badge done">Complete</span></td>
+                    </tr>
+                    <tr>
+                        <td>M6</td>
+                        <td>Analysis tab — snoring × sleep-stage correlation <em>(core deliverable)</em></td>
+                        <td><span class="result-badge done">Complete</span></td>
+                    </tr>
+                    <tr>
+                        <td>M7</td>
+                        <td>watchOS companion — Start/Stop remote via WatchConnectivity</td>
+                        <td><span class="result-badge">Code complete; Watch target signing and on-device pairing test pending</span></td>
+                    </tr>
+                    <tr>
+                        <td>—</td>
+                        <td>UI polish, then optional free App Store publication</td>
+                        <td><span class="result-badge">Planned</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ============================================================
+             Engineering notes
+             ============================================================ -->
+        <div class="project-section">
+            <h2>Engineering Notes</h2>
+            <div class="project-description">
+                <p>Problems that took real diagnosis, beyond the locked-screen story above.</p>
+            </div>
+            <ul>
+                <li>
+                    <strong>Behavioural details of the buffer tap.</strong> The audio tap's buffer is reused
+                    by the system, so it must be deep-copied before being handed to an asynchronous
+                    analysis queue — otherwise the classifier reads whatever the next callback overwrote.
+                </li>
+                <li>
+                    <strong><code>@Observable</code> and <code>NSObject</code> don't mix cleanly.</strong>
+                    Both <code>SNResultsObserving</code> and <code>AVAudioPlayerDelegate</code> require
+                    <code>NSObjectProtocol</code>. Rather than fight the macro, the classifier observer and
+                    the player delegate are each a separate small <code>NSObject</code> proxy, retained
+                    explicitly because the analyzer and <code>AVAudioPlayer</code> both hold their delegates
+                    weakly.
+                </li>
+                <li>
+                    <strong>Simulator dead ends.</strong> An early "Simulator device failed to launch — no
+                    such process" turned out to be a wedged simulator device rather than a code problem
+                    (fixed by erasing all content and settings). It did prompt a defensive guard: if the
+                    input format reports 0 Hz — no audio input available — the app now shows a clear
+                    explanatory error instead of crashing with <code>SIGABRT</code>.
+                </li>
+                <li>
+                    <strong>Playback must not steal the microphone.</strong> <code>ClipPlayer</code> refuses
+                    to load a clip while a recording session is active, because switching the audio session
+                    category to <code>.playback</code> mid-session would end the night's recording.
+                </li>
+                <li>
+                    <strong>Sleep-stage source de-duplication.</strong> If real Apple Watch stage data exists
+                    for a night, unstaged <code>asleepUnspecified</code> samples (iPhone-only estimates) are
+                    ignored so the two sources don't double-count. If there's no Watch data at all, unstaged
+                    sleep is shown as Core so the night is still visible.
+                </li>
+                <li>
+                    <strong>Stage resolution is cached in memory, not persisted.</strong> Keeping it out of
+                    SwiftData avoids a schema migration and stays correct if the underlying Health data
+                    changes later.
+                </li>
+            </ul>
+        </div>
+
+        <!-- ============================================================
+             Privacy
+             ============================================================ -->
+        <div class="project-section">
+            <h2>Privacy &amp; Practical Considerations</h2>
+            <ul>
+                <li><strong>No network access at all.</strong> Recording, inference, and analysis all run on the device; nothing is uploaded, and there is no server to upload to.</li>
+                <li><strong>Only snoring is ever persisted.</strong> Non-snoring audio lives in an in-memory ring buffer and is overwritten, never written to disk. Deleting a session in History deletes its clips.</li>
+                <li><strong>Health access is read-only and reversible</strong> — sleep stages only, gated behind an in-app toggle, revocable from the Health app.</li>
+                <li><strong>Battery.</strong> On charge, negligible; unplugged, roughly 5–15% per hour, so charging overnight is recommended. Only the microphone and CPU inference are active with the screen locked, disk writes happen only during snore events, AAC encoding is hardware-accelerated, and there is no networking.</li>
+                <li><strong>Storage.</strong> A heavy-snoring night comes to tens of megabytes of clips, not gigabytes.</li>
+            </ul>
+        </div>
+
+        <!-- ============================================================
+             Repo
+             ============================================================ -->
+        <div class="project-section">
+            <h2>Code &amp; Repository</h2>
+            <div class="project-description">
+                <p>
+                    Native SwiftUI, iOS 17+, no third-party dependencies. Around 2,400 lines of Swift across
+                    the iOS and watchOS targets. The repository README covers building, signing with a free
+                    Apple ID, testing detection before a real night, and the tuning knobs.
+                </p>
+            </div>
+            <div class="doc-links">
+                <a href="https://github.com/birds0416/SnoreDetector" target="_blank" class="pdf-link">💻 GitHub Repository</a>
+                <a href="https://github.com/birds0416/SnoreDetector/blob/main/README.md" target="_blank" class="pdf-link">📄 README — setup &amp; testing</a>
+                <a href="https://www.kaggle.com/datasets/tareqkhanemu/snoring" target="_blank" class="pdf-link">🎵 Training dataset (Kaggle)</a>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             Reference
+             ============================================================ -->
+        <div class="project-section">
+            <h2>Reference</h2>
+            <ol>
+                <li>
+                    T. Khan, "A Deep Learning Model for Snoring Detection and Vibration Notification Using a
+                    Smart Wearable Gadget," <em>Electronics</em>, vol. 8, no. 9, 2019.
+                    <a href="https://doi.org/10.3390/electronics8090987" target="_blank">doi:10.3390/electronics8090987</a>
+                    — a CNN on MFCC features of 1-second clips, 1,000 samples, 96% accuracy. Its dataset is
+                    the one this app's classifier is trained on.
+                </li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>
