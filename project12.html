@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOCATL Hexapod Walking Simulator (ROS 2 + MuJoCo) - Hojung Lim</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #0366d6;
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-size: 1em;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #0256b9;
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .authors {
+            color: #777;
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+
+        .project-section {
+            margin-bottom: 50px;
+        }
+
+        .project-image {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .project-image-half {
+            width: 50%;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .figure-caption {
+            font-size: 0.85em;
+            color: #888;
+            margin-top: -12px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .image-row {
+                flex-direction: column;
+            }
+            .project-image-half {
+                width: 100%;
+            }
+        }
+
+        .project-description {
+            font-size: 1em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .project-description p {
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6em;
+            color: #333;
+            margin-bottom: 15px;
+            margin-top: 30px;
+            border-left: 4px solid #0366d6;
+            padding-left: 12px;
+        }
+
+        h3 {
+            font-size: 1.2em;
+            color: #444;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .tag {
+            background-color: #e8f4ff;
+            color: #0366d6;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .highlight-box {
+            background-color: #f0f7ff;
+            border-left: 4px solid #0366d6;
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #0366d6;
+        }
+
+        .metric-label {
+            font-size: 0.85em;
+            color: #777;
+            margin-top: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+        }
+
+        th {
+            background-color: #0366d6;
+            color: white;
+            padding: 10px 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 9px 14px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f8f9fa;
+        }
+
+        .pipeline-block {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 14px 18px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.92em;
+            color: #333;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            padding: 1px 5px;
+            font-size: 0.92em;
+            color: #333;
+        }
+
+        .doc-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .pdf-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #0366d6;
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #f0f0f0;
+            border-radius: 6px;
+            font-size: 0.95em;
+            transition: background-color 0.3s;
+        }
+
+        .pdf-link:hover {
+            background-color: #e0e0e0;
+            text-decoration: underline;
+        }
+
+        ul, ol {
+            padding-left: 22px;
+            color: #555;
+        }
+
+        ul li, ol li {
+            margin-bottom: 8px;
+        }
+
+        .result-badge {
+            display: inline-block;
+            background: #e8f4ff;
+            color: #0366d6;
+            border-radius: 6px;
+            padding: 3px 10px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding-left: 26px;
+            position: relative;
+            color: #555;
+        }
+
+        .checklist li::before {
+            content: "☐";
+            position: absolute;
+            left: 0;
+            color: #999;
+        }
+
+        .checklist li.done::before {
+            content: "✓";
+            color: #0366d6;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Home</a>
+
+        <h1>TOCATL Hexapod — ROS 2 + MuJoCo Walking Simulator</h1>
+        <p class="authors">Hojung Lim &nbsp;·&nbsp; RoMeLa (Robotics &amp; Mechanisms Laboratory) &nbsp;·&nbsp; MuJoCo + ROS 2 Jazzy</p>
+
+        <div class="tag-list">
+            <span class="tag">MuJoCo</span>
+            <span class="tag">ROS 2 Jazzy</span>
+            <span class="tag">Hexapod Locomotion</span>
+            <span class="tag">Legged Robots</span>
+            <span class="tag">Gait Generation</span>
+            <span class="tag">Inverse Kinematics</span>
+            <span class="tag">CyberGear MIT Control</span>
+            <span class="tag">Contact Modeling</span>
+            <span class="tag">Sim-to-Real</span>
+            <span class="tag">MJCF</span>
+        </div>
+
+        <!-- Overview -->
+        <div class="project-section">
+            <h2>Project Overview</h2>
+            <!--
+                Screenshot placeholder — save the MuJoCo viewer shot as
+                images/Spiderbot_thumbnail.png and uncomment:
+                <img src="images/Spiderbot_thumbnail.png" alt="TOCATL hexapod standing in the MuJoCo viewer" class="project-image">
+                <p class="figure-caption">The TOCATL hexapod in the MuJoCo viewer, rendered with the converted SolidWorks body shell and the parametric 6-petal dome.</p>
+            -->
+            <div class="highlight-box">
+                A <strong>ROS 2 + MuJoCo simulation of TOCATL</strong>, RoMeLa's radially symmetric
+                hexapod, built so the robot can be driven around from the keyboard with a firm,
+                non-slipping tripod walk. The simulator reproduces the real robot's recovered
+                kinematics, its CyberGear MIT-mode control law, and its legacy gait engine — and is
+                <strong>strictly hardware-free</strong>, importing nothing that can open a CAN bus.
+            </div>
+            <div class="project-description">
+                <p>
+                    The real TOCATL is driven by a console controller over CAN, with 18 Xiaomi CyberGear
+                    quasi-direct-drive actuators across six identical three-joint legs. The goal of this
+                    project was to reconstruct that whole locomotion pipeline in simulation — geometry,
+                    gait math, joint map, and control scheme — so that walking behaviour can be developed,
+                    tested, and recorded without touching hardware, and so the same gait node can later
+                    retarget the real CAN backend without changing any locomotion logic.
+                </p>
+                <p>
+                    Everything is derived from the existing repository's pure-math modules rather than
+                    re-derived: link lengths, forward and inverse kinematics, and joint-to-motor transforms
+                    come from <code>legacy_geometry.py</code>; gait phase offsets, duty factors, and the
+                    walking envelope come from <code>legacy_reference.py</code>; and the canonical
+                    18-motor ordering comes from <code>motor_map.py</code>. The legacy deployment scripts
+                    were read only as reference — never executed, since they enable real motors on startup.
+                </p>
+            </div>
+        </div>
+
+        <!-- Status / results -->
+        <div class="project-section">
+            <h2>Status — Built and Walking</h2>
+            <span class="result-badge">All 7 acceptance tests pass headless in 1.4 s</span>
+            <div class="project-description">
+                <p>
+                    The simulator is complete, walks firmly, renders the real CAD body, and is committed on
+                    the branch <code>codex/tocatl-mujoco-sim</code>.
+                </p>
+            </div>
+
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-value">&lt; 1 μm</div>
+                    <div class="metric-label">Model-FK vs. legacy-FK agreement, so IK targets track with zero error</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">0.36 m</div>
+                    <div class="metric-label">Travelled in a 5 s tripod walk, within 2% of commanded</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">&lt; 0.8°</div>
+                    <div class="metric-label">Mean roll and pitch while walking</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">2–4 mm</div>
+                    <div class="metric-label">Loaded-foot slip during stance</div>
+                </div>
+            </div>
+
+            <h3>Acceptance test suite (<code>test/test_walk.py</code>)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Test</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>FK/IK round-trip over a grid of reachable foot points</td>
+                        <td>Pass</td>
+                    </tr>
+                    <tr>
+                        <td>Model-FK identity (MJCF vs. <code>legacy_geometry</code>)</td>
+                        <td>Pass — agreement below 1 μm</td>
+                    </tr>
+                    <tr>
+                        <td>10 s static stand</td>
+                        <td>Pass — height stable, no slip</td>
+                    </tr>
+                    <tr>
+                        <td>5 s tripod walk</td>
+                        <td>Pass — 0.36 m, ≤2% speed error, roll/pitch &lt; 0.8°, height σ 6 mm</td>
+                    </tr>
+                    <tr>
+                        <td>Ripple gait</td>
+                        <td>Pass</td>
+                    </tr>
+                    <tr>
+                        <td>Wave gait</td>
+                        <td>Pass</td>
+                    </tr>
+                    <tr>
+                        <td>Mid-walk gait switch</td>
+                        <td>Pass — no stumble</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="project-description">
+                <p>
+                    Two tunings mattered more than the rest. Raising the stance stiffness ramp rate
+                    (<code>kp_rate_up</code>) from 1 to 25 is what makes the legs <em>plant</em> rather
+                    than settle, which is the entire difference between a firm-looking walk and a mushy
+                    one. And the slip metric had to be measured during genuinely <em>loaded</em> contact
+                    rather than over the whole stance phase mask — otherwise the number reports foot
+                    motion from moments when the foot is not carrying weight at all.
+                </p>
+            </div>
+        </div>
+
+        <!-- Robot -->
+        <div class="project-section">
+            <h2>The Robot</h2>
+            <div class="project-description">
+                <p>
+                    TOCATL is a radially symmetric hexapod: a central body carrying six identical legs,
+                    each with three revolute joints — <strong>hip yaw</strong> about the leg-local Z axis
+                    (swings the leg around its mount), <strong>hip pitch</strong> about the leg-local Y
+                    axis (lifts the thigh), and <strong>knee</strong> about the leg-local Y axis (bends the
+                    shin relative to the thigh). Eighteen joints in total, one CyberGear actuator each.
+                </p>
+            </div>
+
+            <h3>Link geometry</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Meaning</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>d1</code></td><td>Vertical drop from the yaw axis to the pitch axis</td><td>114.25 mm</td></tr>
+                    <tr><td><code>d2</code></td><td>Radial offset from the yaw axis to the pitch axis</td><td>45.5561 mm</td></tr>
+                    <tr><td><code>d3</code></td><td>Thigh (hip pitch → knee)</td><td>330.3455 mm</td></tr>
+                    <tr><td><code>d4</code></td><td>Shin (knee → foot tip)</td><td>458.0 mm</td></tr>
+                </tbody>
+            </table>
+            <div class="project-description">
+                <p>
+                    Maximum radial reach from the hip is <code>d2 + d3 + d4 ≈ 834 mm</code>, though the
+                    practical planted reach stays well inside that. The body is modelled as a 600 mm
+                    diameter disc, and leg <em>k</em> is mounted at <code>30° + k·60°</code>, so the six
+                    hips sit every 60° with each hip-yaw axis pointing radially outward.
+                </p>
+            </div>
+
+            <h3>Kinematics</h3>
+            <div class="pipeline-block">base = [d2, 0, d1]                        # leg-local frame
+knee = base + Rz(θ1) · Ry(θ2)      · [d3, 0, 0]
+foot = knee + Rz(θ1) · Ry(θ2 + θ3) · [d4, 0, 0]</div>
+            <div class="project-description">
+                <p>
+                    Inverse kinematics takes <code>θ1 = atan2(y, x)</code> and then solves the planar
+                    two-link problem in the radial–vertical plane for <code>θ2</code> and <code>θ3</code>
+                    with the law of cosines, taking the positive-knee branch.
+                </p>
+                <p>
+                    The single most important kinematic detail: the legacy FK rotates hip yaw about
+                    <code>[d2, 0, d1]</code> rather than about the mount point. The MJCF reproduces this
+                    exactly — verified to under a micrometre — which is why IK targets track with zero
+                    error instead of accumulating a constant offset that would only show up later as
+                    mysterious foot drift.
+                </p>
+            </div>
+
+            <h3>Joint and motor map</h3>
+            <div class="project-description">
+                <p>
+                    Motor IDs follow <code>leg·10 + joint</code>, where joint 1 is hip yaw, 2 is hip pitch,
+                    and 3 is knee: leg 1 is 11/12/13, leg 2 is 21/22/23, and so on through leg 6 at
+                    61/62/63. This exact ordering is preserved in every 18-element joint vector so the sim
+                    maps one-to-one onto the real robot later. The real robot splits these across two CAN
+                    buses; in simulation that split is irrelevant and survives only in metadata comments.
+                </p>
+            </div>
+
+            <h3>Actuator model — CyberGear MIT mode</h3>
+            <div class="pipeline-block">τ = kp·(pos_des − q) + kd·(vel_des − q̇) + τ_ff</div>
+            <div class="project-description">
+                <p>
+                    The real command streamer sends MIT-style tuples (position, velocity, kp, kd, torque)
+                    per motor and the motor closes the loop internally. Rather than use MuJoCo position
+                    actuators, the sim uses pure <strong>torque actuators</strong> and computes τ in
+                    software from the incoming command. That choice is what preserves the real
+                    controller's per-joint, per-phase gain scheduling — with position actuators the gain
+                    schedule simply cannot be expressed. Torque is clipped to the CyberGear peak of
+                    ±12 N·m, and the legacy hip-pitch support-torque cap of 9.25 N·m serves as a useful
+                    sanity bound.
+                </p>
+            </div>
+        </div>
+
+        <!-- Gait -->
+        <div class="project-section">
+            <h2>Gait Generation</h2>
+            <div class="project-description">
+                <p>
+                    A single global phase <code>u ∈ [0, 1)</code> advances at <code>du = dt / cycle_time</code>.
+                    Each leg reads its own phase <code>u_i = (u + phase_offset[i]) mod 1</code>; if
+                    <code>u_i &lt; duty_factor</code> the leg is in stance with progress
+                    <code>s = u_i / duty</code>, otherwise it is in swing with
+                    <code>s = (u_i − duty) / (1 − duty)</code>.
+                </p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Gait</th>
+                        <th>Duty</th>
+                        <th>Phase offsets (legs 0–5)</th>
+                        <th>Character</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Tripod</td>
+                        <td>0.5</td>
+                        <td>0, ½, 0, ½, 0, ½</td>
+                        <td>Three legs swing at once — default, fastest</td>
+                    </tr>
+                    <tr>
+                        <td>Ripple</td>
+                        <td>2/3</td>
+                        <td>0, ⅓, ⅔, 0, ⅓, ⅔</td>
+                        <td>Two legs swing — smoother</td>
+                    </tr>
+                    <tr>
+                        <td>Wave</td>
+                        <td>5/6</td>
+                        <td>⅚, ⅓, ⅔, ⅙, ½, 0</td>
+                        <td>One leg swings — slowest, most stable</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Foot trajectory</h3>
+            <div class="project-description">
+                <p>
+                    Each leg gets a neutral foot point radially out from its hip at <code>R_foot</code>, on
+                    the ground plane, with the body at height <code>H_body</code>. Travel direction and
+                    stride length come from the commanded body velocity, clamped to the stride maximum; a
+                    yaw command adds a tangential per-leg component.
+                </p>
+                <ul>
+                    <li><strong>Stance</strong> — the foot moves linearly from <code>+L/2</code> to
+                        <code>−L/2</code> along the travel direction at <code>z = 0</code>. In world
+                        coordinates the foot stays put while the body advances, which is precisely the
+                        no-slip condition.</li>
+                    <li><strong>Swing</strong> — the foot returns from <code>−L/2</code> to
+                        <code>+L/2</code>, lifting along <code>z = step_height · sin(π·s)</code> for a
+                        clean arch.</li>
+                </ul>
+                <p>
+                    Each foot target is then converted from the body frame into the leg's local frame by
+                    subtracting the hip mount position and rotating by
+                    <code>−(mount_angle + body_yaw)</code>, run through IK, and packed into the 18-vector.
+                </p>
+            </div>
+
+            <h3>Walking envelope</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Default</th>
+                        <th>Range / limit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Stride length</td><td>175 mm</td><td>20 – 400 mm</td></tr>
+                    <tr><td>Step height</td><td>215 mm</td><td>0 – 400 mm</td></tr>
+                    <tr><td>Cycle time</td><td>1.5 s</td><td>1.2 s fast / 4.5 s slow</td></tr>
+                    <tr><td>Foot speed</td><td>—</td><td>max 400 mm/s</td></tr>
+                    <tr><td>Body speed</td><td>—</td><td>max 140 mm/s</td></tr>
+                    <tr><td>Body yaw rate</td><td>—</td><td>max 35 °/s</td></tr>
+                    <tr><td>Command stream</td><td>200 Hz</td><td>gait/command loop rate</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Phase-scheduled gains — the key to a firm walk</h3>
+            <div class="project-description">
+                <p>
+                    Stance legs must be stiff so they plant hard and carry weight; swing legs must be soft
+                    so they do not fight the air. The schedule runs stance <code>Kp ≈ 100</code> against
+                    swing <code>Kp ≈ 10</code> with <code>Kd ≈ 3</code>, ramping Kp up quickly on entering
+                    stance and down slowly on entering swing. The gait node passes
+                    <code>(pos, vel, kp, kd)</code> per joint to the sim node, which applies the MIT-mode
+                    torque law above.
+                </p>
+            </div>
+        </div>
+
+        <!-- Architecture -->
+        <div class="project-section">
+            <h2>Software Architecture</h2>
+            <div class="project-description">
+                <p>
+                    All new code lives in a single new <code>ament_python</code> package,
+                    <code>src/tocatl_sim</code>, leaving the existing control package and its safety state
+                    machine, command limiter, and calibration completely untouched.
+                </p>
+            </div>
+
+            <div class="pipeline-block">teleop_keyboard ──/cmd_vel, /gait_params──►  gait_node
+                                                │
+                                       /joint_commands (pos, vel, kp, kd, τ)
+                                                ▼
+                                          mujoco_sim_node
+                                                │
+                                    /joint_states, /odom (TF world→base_link)</div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Node</th>
+                        <th>Rate</th>
+                        <th>Responsibility</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>mujoco_sim_node</code></td>
+                        <td>500 Hz</td>
+                        <td>Loads the MJCF, applies MIT-mode torque, steps physics at dt = 0.002 s,
+                            publishes joint states and the free-body pose, renders the live passive
+                            viewer or an offscreen frame stream.</td>
+                    </tr>
+                    <tr>
+                        <td><code>gait_node</code></td>
+                        <td>200 Hz</td>
+                        <td>The locomotion brain — phase engine, foot trajectories, IK, and gain
+                            scheduling. Holds a planted stand pose at zero velocity so the robot is
+                            rock-steady between moves.</td>
+                    </tr>
+                    <tr>
+                        <td><code>teleop_keyboard</code></td>
+                        <td>—</td>
+                        <td>Non-blocking hold-to-move keyboard driver publishing velocity and gait
+                            parameters, with a live status line.</td>
+                    </tr>
+                    <tr>
+                        <td><code>record_walk</code></td>
+                        <td>—</td>
+                        <td>Offscreen renderer writing <code>walk.mp4</code> at a fixed frame rate for
+                            reproducible recordings.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="project-description">
+                <p>
+                    Keeping the gait <em>outside</em> the physics node is deliberate: it mirrors the real
+                    robot's node split of gait generator → command sender → motors, so the identical
+                    <code>gait_node</code> can later drive real CAN through a different backend without
+                    any change to locomotion logic. A launch file starts all three nodes, and a params
+                    YAML exposes every tunable — masses, gains, envelope, timestep, and camera.
+                </p>
+            </div>
+
+            <h3>Keyboard map (replacing the Xbox controller)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Action</th>
+                        <th>Original pad input</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>W / S</td><td>Walk forward / backward</td><td>Left stick Y</td></tr>
+                    <tr><td>A / D</td><td>Strafe left / right</td><td>Left stick X</td></tr>
+                    <tr><td>Q / E</td><td>Turn left / right</td><td>Right stick X</td></tr>
+                    <tr><td>1 / 2 / 3</td><td>Select tripod / ripple / wave</td><td>Gait select</td></tr>
+                    <tr><td>[ / ]</td><td>Stride length − / +</td><td>D-pad X</td></tr>
+                    <tr><td>- / =</td><td>Step height − / +</td><td>D-pad Y</td></tr>
+                    <tr><td>R / F</td><td>Body height up / down</td><td>A / B</td></tr>
+                    <tr><td>T / G</td><td>Leg radius out / in</td><td>Y / X</td></tr>
+                    <tr><td>Space</td><td>Stop → graceful stand</td><td>LB (graceful return)</td></tr>
+                    <tr><td>Z</td><td>Park (lower and settle)</td><td>RB</td></tr>
+                    <tr><td>X / Esc</td><td>Quit cleanly</td><td>Back (E-stop)</td></tr>
+                </tbody>
+            </table>
+            <div class="project-description">
+                <p>
+                    Commanded speeds slew toward their target rather than stepping to it, so motion reads
+                    smoothly on camera, and hold-to-move is used because it looks far better in a
+                    recording than press-to-set-velocity.
+                </p>
+            </div>
+        </div>
+
+        <!-- MuJoCo model -->
+        <div class="project-section">
+            <h2>The MuJoCo Model</h2>
+            <div class="project-description">
+                <p>
+                    The MJCF is generated parametrically by a small Python builder that loops over the six
+                    legs using the mount angles, so geometry can never drift out of sync between legs. No
+                    CAD meshes are required for the dynamics: the base is a disc plate of radius 0.30 m
+                    with a free joint, and each leg is a coxa capsule for the <code>d2</code> offset, a
+                    femur capsule of length 0.330 m, and a tibia capsule of length 0.458 m, ending in a
+                    small high-friction foot sphere.
+                </p>
+                <ul>
+                    <li><strong>Contacts</strong> — feet use <code>condim=6</code> with
+                        <code>friction="1.2 0.02 0.001"</code> plus a little solref/solimp softness so
+                        contacts do not jitter.</li>
+                    <li><strong>Actuators</strong> — one torque motor per hinge with
+                        <code>forcerange="-12 12"</code>.</li>
+                    <li><strong>Mass</strong> — roughly 13.6 kg total, with link mass placed near the
+                        joints since the CyberGear actuators dominate it, keeping the centre of mass low
+                        and central.</li>
+                    <li><strong>Foot radius</strong> — 12 mm.</li>
+                    <li><strong>Sensors</strong> — frame position and quaternion on the base, joint
+                        position and velocity on every hinge, and a touch sensor per foot, which is what
+                        makes the headless acceptance test possible.</li>
+                </ul>
+            </div>
+
+            <h3>CAD visuals</h3>
+            <!--
+                Screenshot placeholders — add e.g.
+                images/Spiderbot_cad_body.png and images/Spiderbot_dome.png, then uncomment:
+                <div class="image-row">
+                    <img src="images/Spiderbot_cad_body.png" alt="Converted SolidWorks body shell in simulation" class="project-image-half">
+                    <img src="images/Spiderbot_dome.png" alt="Parametrically rebuilt 6-petal dome" class="project-image-half">
+                </div>
+                <p class="figure-caption">Left: the converted SolidWorks body assembly. Right: the parametrically rebuilt 6-petal dome with creases and arched leg openings.</p>
+            -->
+            <div class="project-description">
+                <p>
+                    To make the sim look like the actual robot, 17 SolidWorks parts were converted to STL
+                    entirely in-browser through a WASM converter, so the CAD never left the machine. The
+                    lofted shell parts tessellate empty, so the six-petal dome was instead rebuilt
+                    parametrically in a <code>dome_builder.py</code> script — creases, arched leg openings,
+                    and a light trim — and junk disc and cone artifacts in some exports were removed by
+                    connected-component filtering. The motors are stylized Ø86 × 36.5 mm cylinders.
+                </p>
+                <p>
+                    Placement lives in a <code>cad_layout.py</code> module, with the hip turret transform
+                    derived by cylinder-fitting its motor bore. The stance was rematched to a photo of the
+                    real robot: body at 220 mm, a 0.59 m foot ring, knees riding above the dome. Setting
+                    <code>impratio=10</code> kills the foot creep that a sprawled stance otherwise
+                    produces. Critically, all mesh geoms are <strong>massless</strong>, so the dynamics are
+                    bit-identical to the capsule model and a single launch argument reverts to capsules.
+                </p>
+            </div>
+        </div>
+
+        <!-- Bring-up ladder -->
+        <div class="project-section">
+            <h2>Bring-Up and Debugging Ladder</h2>
+            <div class="project-description">
+                <p>
+                    Rather than build the whole thing and hope, the sim was brought up one rung at a time,
+                    each rung fixed before advancing, with the headless acceptance test asserting the
+                    metrics so tuning could iterate automatically before ever opening the viewer.
+                </p>
+            </div>
+            <ol>
+                <li><strong>Static stand</strong> — hold the stand pose for 10 s within 10 mm of height,
+                    roll and pitch under 2°, no slip. Sagging points at stance Kp, total mass or CoM
+                    height, an IK sign error bending the knees the wrong way, or feet that do not actually
+                    reach the ground at the commanded body height.</li>
+                <li><strong>March in place</strong> — tripod at zero stride. Buzzing points at contact
+                    softness, timestep, swing Kp, or missing joint damping.</li>
+                <li><strong>Slow tripod forward</strong> — the body should advance smoothly with stance
+                    feet fixed in world. Skating points at foot friction, stance Kp, a stance trajectory
+                    that is not moving the foot backward at exactly body speed, or fewer than three feet
+                    genuinely loaded.</li>
+                <li><strong>Faster and turning</strong> — raise velocity, add yaw, exercise ripple and
+                    wave, and switch gaits mid-walk without a stumble.</li>
+                <li><strong>Camera pass</strong> — run the recorder and tune out any wobble, toe drag, or
+                    hip pop. This is the real bar: it has to look firm and neat.</li>
+            </ol>
+            <div class="project-description">
+                <p>
+                    The acceptance thresholds encoded in the test are a forward displacement of at least
+                    0.15 m and within 25% of commanded, mean roll and pitch under 3°, base-height standard
+                    deviation under 15 mm, no base–ground contact, no joint NaNs, and per-foot horizontal
+                    slip under 15 mm during that foot's stance phase.
+                </p>
+            </div>
+        </div>
+
+        <!-- Safety -->
+        <div class="project-section">
+            <h2>Hardware-Safety Constraints</h2>
+            <div class="highlight-box">
+                The legacy deployment scripts in this repository <strong>enable real motors on
+                startup</strong>. Everything in the simulation package therefore had to be provably inert
+                with respect to hardware.
+            </div>
+            <div class="project-description">
+                <ul>
+                    <li>No import of <code>can</code>, the CyberGear driver, <code>python-cybergear</code>,
+                        or <code>socketcan</code> anywhere in the package.</li>
+                    <li>No call to CAN setup, motor enable, or zero-position routines.</li>
+                    <li>The <code>legacy/</code> tree is read-only reference. The legacy walking scripts
+                        were read to understand the gait, and the math was ported — the files were never
+                        executed.</li>
+                    <li>Only the hardware-free pure-math modules are imported, never copied, so the sim
+                        and the real controller cannot drift apart.</li>
+                    <li>The software-safety CI passes locally on the branch.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Running it -->
+        <div class="project-section">
+            <h2>Running It</h2>
+            <div class="pipeline-block">export PATH=/usr/bin:$PATH        # conda base hides rclpy
+source /opt/ros/jazzy/setup.bash
+colcon build --packages-select tocatl_sim tocatl_kinematics tocatl_gait tocatl_diagnostics
+source install/setup.bash
+ros2 launch tocatl_sim sim.launch.py</div>
+            <div class="project-description">
+                <p>
+                    Focus the MuJoCo window and drive with the keyboard map above. To record a run
+                    headlessly, launch the offscreen recorder with the EGL rendering backend and it writes
+                    <code>walk.mp4</code> directly. The environment is Ubuntu 24.04 with ROS 2 Jazzy;
+                    MuJoCo, NumPy, and SciPy come from pip, and the venv needs system site packages so
+                    <code>mujoco</code> and <code>rclpy</code> are importable together.
+                </p>
+            </div>
+        </div>
+
+        <!-- Study curriculum -->
+        <div class="project-section">
+            <h2>Self-Study Curriculum</h2>
+            <div class="project-description">
+                <p>
+                    Alongside the build, I set myself a structured curriculum covering every concept the
+                    simulator depends on, with the standard for each topic being that I can explain the
+                    full locomotion pipeline unaided — motivation, the alternatives and why this approach
+                    wins, the mathematical intuition with every variable accounted for, its role in this
+                    project, the engineering trade-offs, and its failure modes.
+                </p>
+            </div>
+            <ol>
+                <li>Coordinate frames and forward kinematics</li>
+                <li>Inverse kinematics — two-link planar and the law of cosines</li>
+                <li>Body reference frame and body→leg coordinate transforms</li>
+                <li>Gait generation and the phase engine (duty factor, phase offsets)</li>
+                <li>Tripod, ripple, and wave gaits, and static stability</li>
+                <li>Foot trajectories (stance anchor, swing arch) and the no-slip condition</li>
+                <li>CyberGear MIT control law — impedance / PD plus feedforward</li>
+                <li>Phase-scheduled gains — stiff stance, soft swing</li>
+                <li>MuJoCo modeling — MJCF, capsules, contacts, solref/solimp, impratio</li>
+                <li>Contact and friction modeling</li>
+                <li>ROS 2 architecture — node split, topics, loop rates</li>
+                <li>FK validation and sim-to-real kinematic consistency</li>
+            </ol>
+        </div>
+
+        <!-- Open items -->
+        <div class="project-section">
+            <h2>Open Items &amp; Future Work</h2>
+            <ul>
+                <li>Push the simulation branch and open the draft pull request (software-safety CI already
+                    passes locally).</li>
+                <li>The knee bar is currently fixed to the femur rather than modelled as the real
+                    articulating four-bar linkage.</li>
+                <li>The RoMeLa logo is not yet on the dome.</li>
+                <li>Exact-CAD shell petals, if the body shell can be exported from SolidWorks in a form
+                    that tessellates.</li>
+                <li>Sim-to-real: the joint ordering, control law, and gait math were all built to
+                    transfer, so the natural next step is retargeting <code>gait_node</code> to the real
+                    CAN backend behind the same topic contract.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
