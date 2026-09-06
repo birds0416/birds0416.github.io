@@ -309,12 +309,8 @@
         <!-- Overview -->
         <div class="project-section">
             <h2>Project Overview</h2>
-            <!--
-                Screenshot placeholder — save the MuJoCo viewer shot as
-                images/Spiderbot_thumbnail.png and uncomment:
-                <img src="images/Spiderbot_thumbnail.png" alt="TOCATL hexapod standing in the MuJoCo viewer" class="project-image">
-                <p class="figure-caption">The TOCATL hexapod in the MuJoCo viewer, rendered with the converted SolidWorks body shell and the parametric 6-petal dome.</p>
-            -->
+            <img src="images/Spiderbot_walking.png" alt="TOCATL hexapod mid-stride in the MuJoCo simulation" class="project-image">
+            <p class="figure-caption">TOCATL mid-stride in MuJoCo, from the tracking camera used for the recorded walk. The body is the converted SolidWorks shell with the parametrically rebuilt 6-petal dome; the stylized cylinders at each hip are the CyberGear actuators.</p>
             <div class="highlight-box">
                 A <strong>ROS 2 + MuJoCo simulation of TOCATL</strong>, RoMeLa's radially symmetric
                 hexapod, built so the robot can be driven around from the keyboard with a firm,
@@ -462,6 +458,12 @@
                 </p>
             </div>
 
+            <div class="image-row">
+                <img src="images/Spiderbot_top_view.png" alt="Top-down view showing six legs spaced 60 degrees apart around the body disc" class="project-image-half">
+                <img src="images/Spiderbot_leg_detail.png" alt="Close-up of one leg showing the hip actuator, thigh, and shin" class="project-image-half">
+            </div>
+            <p class="figure-caption">Left: the top-down camera, showing the six-fold radial symmetry — one leg every 60° around the 600 mm body disc, with the dome's petal creases and arched leg openings visible. Right: the per-leg camera, looking along leg 1 at the hip turret actuator, the thigh, and the shin running down to the foot sphere.</p>
+
             <h3>Kinematics</h3>
             <div class="pipeline-block">base = [d2, 0, d1]                        # leg-local frame
 knee = base + Rz(θ1) · Ry(θ2)      · [d3, 0, 0]
@@ -551,6 +553,9 @@ foot = knee + Rz(θ1) · Ry(θ2 + θ3) · [d4, 0, 0]</div>
                     </tr>
                 </tbody>
             </table>
+
+            <img src="images/Spiderbot_gait_sequence.png" alt="Four frames from the recorded walk showing support alternating between leg triples" class="project-image">
+            <p class="figure-caption">Four frames from the recorded tripod walk, sampled 0.375 s apart — a quarter of the nominal 1.5 s cycle time. The support pattern shifts from frame to frame as legs hand off between stance and swing, while the body height and attitude stay essentially constant throughout, which is what the walk is tuned for.</p>
 
             <h3>Foot trajectory</h3>
             <div class="project-description">
@@ -737,15 +742,8 @@ foot = knee + Rz(θ1) · Ry(θ2 + θ3) · [d4, 0, 0]</div>
             </div>
 
             <h3>CAD visuals</h3>
-            <!--
-                Screenshot placeholders — add e.g.
-                images/Spiderbot_cad_body.png and images/Spiderbot_dome.png, then uncomment:
-                <div class="image-row">
-                    <img src="images/Spiderbot_cad_body.png" alt="Converted SolidWorks body shell in simulation" class="project-image-half">
-                    <img src="images/Spiderbot_dome.png" alt="Parametrically rebuilt 6-petal dome" class="project-image-half">
-                </div>
-                <p class="figure-caption">Left: the converted SolidWorks body assembly. Right: the parametrically rebuilt 6-petal dome with creases and arched leg openings.</p>
-            -->
+            <img src="images/Spiderbot_front_view.png" alt="Front view of the hexapod showing the symmetric stance and body height" class="project-image-half">
+            <p class="figure-caption">The front camera, showing the stance rematched to a photo of the real robot — body at 220 mm, a 0.59 m foot ring, and knees riding above the dome.</p>
             <div class="project-description">
                 <p>
                     To make the sim look like the actual robot, 17 SolidWorks parts were converted to STL
