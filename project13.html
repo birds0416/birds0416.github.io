@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suni (순이) — Android Time Manager for SUNY Korea - Hojung Lim</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #0366d6;
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-size: 1em;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: #0256b9; text-decoration: underline; }
+
+        h1 { font-size: 2em; color: #333; margin-bottom: 10px; }
+        .subtitle { color: #777; font-size: 1em; margin-bottom: 20px; }
+
+        .tag-list { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
+        .tag {
+            background-color: #f1e9ff;
+            color: #6b3fa0;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .repo-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #24292f;
+            text-decoration: none;
+            padding: 10px 18px;
+            background-color: #f0f0f0;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            font-size: 0.95em;
+            font-weight: 500;
+            margin-bottom: 30px;
+            transition: background-color 0.3s;
+        }
+        .repo-link:hover { background-color: #e4e8ec; }
+        .repo-icon { width: 20px; height: 20px; }
+
+        .project-section { margin-bottom: 50px; }
+
+        .project-image {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* row of tall phone screens */
+        .screens-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 10px;
+        }
+        .screens-row figure { margin: 0; }
+        .screens-row img {
+            width: 100%;
+            display: block;
+            border: 1px solid #e3d9f3;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+        .screens-row figcaption {
+            margin-top: 8px;
+            font-size: 0.8em;
+            color: #777;
+            text-align: center;
+            line-height: 1.35;
+        }
+        @media (max-width: 768px) {
+            .screens-row { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .fig-caption {
+            text-align: center;
+            font-size: 0.85em;
+            color: #888;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .project-description { font-size: 1em; color: #555; margin-bottom: 20px; }
+        .project-description p { margin-bottom: 10px; }
+
+        h2 {
+            font-size: 1.6em;
+            color: #333;
+            margin-bottom: 15px;
+            margin-top: 30px;
+            border-left: 4px solid #6b3fa0;
+            padding-left: 12px;
+        }
+
+        h3 { font-size: 1.15em; color: #444; margin-bottom: 10px; margin-top: 22px; }
+
+        .highlight-box {
+            background-color: #f7f2ff;
+            border-left: 4px solid #6b3fa0;
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .metric-card {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+        .metric-value { font-size: 1.5em; font-weight: bold; color: #6b3fa0; }
+        .metric-label { font-size: 0.82em; color: #777; margin-top: 4px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        th {
+            background-color: #6b3fa0;
+            color: white;
+            padding: 10px 12px;
+            text-align: left;
+        }
+        td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
+        }
+        tr:nth-child(even) td { background-color: #f8f9fa; }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            padding: 1px 5px;
+            font-size: 0.92em;
+            color: #333;
+        }
+
+        .pipeline-block {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 14px 18px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            color: #333;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        ul, ol { padding-left: 22px; color: #555; }
+        ul li, ol li { margin-bottom: 6px; }
+
+        .note {
+            font-size: 0.88em;
+            color: #777;
+            background: #fafafa;
+            border: 1px dashed #ddd;
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Home</a>
+
+        <h1>Suni (순이) — Educational Time Manager for SUNY Korea Students</h1>
+        <p class="subtitle">Hojung Lim &nbsp;·&nbsp; Android client (Kotlin) &nbsp;·&nbsp; Two-platform student team project</p>
+
+        <div class="tag-list">
+            <span class="tag">Android</span>
+            <span class="tag">Kotlin</span>
+            <span class="tag">Jetpack Navigation</span>
+            <span class="tag">RecyclerView</span>
+            <span class="tag">ViewPager + TabLayout</span>
+            <span class="tag">Material Components</span>
+            <span class="tag">SharedPreferences</span>
+            <span class="tag">JSON Assets</span>
+            <span class="tag">Firebase</span>
+        </div>
+
+        <a href="https://github.com/birds0416/Suni_android" target="_blank" class="repo-link">
+            <img src="images/github-icon.png" alt="GitHub" class="repo-icon">
+            birds0416 / Suni_android
+        </a>
+
+        <!-- Overview -->
+        <div class="project-section">
+            <h2>Overview</h2>
+            <img src="images/Suni_thumbnail.png" alt="Suni app screens — schedule, add course, and campus contacts" class="project-image">
+            <p class="fig-caption">Suni's three main areas — the weekly timetable, the course catalogue, and the campus directory</p>
+
+            <div class="highlight-box">
+                <strong>Suni (순이)</strong> is an educational time manager built for students at
+                <strong>SUNY Korea</strong>. It puts the three things a student checks most often —
+                their weekly class timetable, the academic calendar, and the campus phone directory —
+                behind a single three-tab app. I built and shipped the <strong>Android client</strong>
+                in Kotlin; a teammate built the iOS version against the same design.
+            </div>
+
+            <div class="project-description">
+                <p>
+                    The problem it solves is mundane but real. Course times, the academic calendar, and
+                    office phone numbers all live in different places on the university's site, and none
+                    of them are pleasant to use on a phone. Suni pulls them into one app where building a
+                    timetable takes a few taps, the semester's key dates are a swipe away, and calling the
+                    housing office is a single tap rather than a search.
+                </p>
+            </div>
+
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-value">161</div>
+                    <div class="metric-label">Courses in the bundled catalogue</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">3</div>
+                    <div class="metric-label">Top-level tabs (schedule, calendar, contacts)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">28</div>
+                    <div class="metric-label">Campus contacts, tap to dial</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">API 19+</div>
+                    <div class="metric-label">Min SDK — targets API 30, v1.1.0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screens -->
+        <div class="project-section">
+            <h2>The App</h2>
+            <div class="screens-row">
+                <figure>
+                    <img src="images/Suni_schedule.png" alt="Weekly timetable with a course detail sheet open">
+                    <figcaption><strong>내 스케줄</strong><br>Weekly timetable, with a tapped course opening its detail sheet</figcaption>
+                </figure>
+                <figure>
+                    <img src="images/Suni_addcourse.png" alt="Add course screen with major and weekday filters">
+                    <figcaption><strong>수업 추가</strong><br>Course catalogue filtered by major and meeting day</figcaption>
+                </figure>
+                <figure>
+                    <img src="images/Suni_calendar.png" alt="Academic calendar month view with event list">
+                    <figcaption><strong>학사 일정</strong><br>Academic calendar — month view plus the event list</figcaption>
+                </figure>
+                <figure>
+                    <img src="images/Suni_contacts.png" alt="Campus directory grouped by department">
+                    <figcaption><strong>연락처</strong><br>Campus directory grouped by office, with call and email</figcaption>
+                </figure>
+            </div>
+            <p class="fig-caption">Preview screens as published in the repository README, cropped to the app UI</p>
+
+            <div class="note">
+                The preview images in the repository were captured on a phone whose screen has a notch.
+                Since this page documents the Android client, each screenshot has been cropped to the app's
+                own interface — the device frame, notch and platform status bar are removed, so what you see
+                is only the UI the two clients share.
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="project-section">
+            <h2>What It Does</h2>
+
+            <h3>Weekly timetable</h3>
+            <div class="project-description">
+                <p>
+                    The schedule tab renders a Monday–Friday grid of course blocks. Tapping a block opens a
+                    detail sheet with the meeting pattern, instructor and room, and a delete control; removing
+                    a course writes the timetable straight back to storage. The whole timetable is serialised
+                    to <code>SharedPreferences</code> under a single <code>"timetable"</code> key, so a
+                    student's schedule survives restarts without any account or server.
+                </p>
+                <p>
+                    A toolbar action <strong>captures the timetable as an image</strong> — the view is drawn
+                    into a <code>Bitmap</code> through a <code>Canvas</code>, compressed to JPEG and inserted
+                    into the device gallery via <code>MediaStore</code>. It exists because the thing students
+                    actually do with a finished timetable is send a picture of it to their friends.
+                </p>
+            </div>
+
+            <h3>Building a schedule</h3>
+            <div class="project-description">
+                <p>
+                    Adding classes opens a two-tab screen: pick from the course catalogue, or enter a class by
+                    hand for anything the catalogue does not cover. The catalogue is filterable by
+                    <strong>major</strong> (AMS, BUS, CSE, MEC, TSM and ETC) and by <strong>meeting day</strong>
+                    (Monday through Friday), with a search field on top. Each row shows the course code,
+                    instructor and meeting pattern, plus an info button linking out to the official course page.
+                </p>
+                <p>
+                    One detail that drives the data model: a single course can occupy more than one slot on the
+                    grid. A lecture that meets twice a week plus a lab is three separate blocks, so adding one
+                    catalogue entry can hand back up to three schedule objects at once —
+                    <strong>28 of the 161 courses carry a lab section</strong>.
+                </p>
+            </div>
+
+            <h3>Academic calendar and campus directory</h3>
+            <div class="project-description">
+                <p>
+                    The calendar tab pairs a month view with a scrollable list of semester events — registration
+                    deadlines, breaks and holidays — drawn from 47 bundled entries, 14 of which are marked as
+                    holidays. The contacts tab lists 28 campus numbers grouped by office (IGC facilities,
+                    department coordinators, and student affairs); tapping a row fires an
+                    <code>ACTION_DIAL</code> intent with the number pre-filled, and each row also carries an
+                    email shortcut.
+                </p>
+            </div>
+        </div>
+
+        <!-- Architecture -->
+        <div class="project-section">
+            <h2>How It Is Built</h2>
+            <div class="project-description">
+                <p>
+                    The app is a <strong>single-activity architecture</strong>. <code>MainActivity</code> hosts a
+                    navigation graph with three top-level destinations wired to a
+                    <code>BottomNavigationView</code>, so the three tabs are fragments rather than activities and
+                    back-stack behaviour comes from Jetpack Navigation rather than hand-rolled logic. Adding a
+                    course is the one flow that leaves the graph, launching a separate activity for result.
+                </p>
+            </div>
+
+            <div class="pipeline-block">MainActivity  (BottomNavigationView + NavController)
+   ├── ScheduleFragment    → TimetableView, SharedPreferences, capture-to-gallery
+   │        └── AddCourseActivity  (ViewPager + TabLayout, startActivityForResult)
+   │                 ├── CourseFragment   → all_courses.json  + RecyclerView
+   │                 └── ManualFragment   → hand-entered class
+   ├── CalendarFragment    → calendar.json     + RecyclerView
+   └── PhoneBoothFragment  → phone_number.json + RecyclerView → ACTION_DIAL</div>
+
+            <table>
+                <thead>
+                    <tr><th>Layer</th><th>Choice</th><th>Why</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Language</td>
+                        <td>Kotlin, min SDK 19 / target SDK 30</td>
+                        <td>Low minimum so older student handsets are still supported</td>
+                    </tr>
+                    <tr>
+                        <td>Navigation</td>
+                        <td>Jetpack Navigation + <code>BottomNavigationView</code></td>
+                        <td>Three tabs as top-level destinations with a single host activity</td>
+                    </tr>
+                    <tr>
+                        <td>Timetable grid</td>
+                        <td>TimetableView, checked in as its own Gradle module</td>
+                        <td>Supplies the grid, the course blocks and a serialise/restore format for the whole table</td>
+                    </tr>
+                    <tr>
+                        <td>Lists</td>
+                        <td><code>RecyclerView</code> with a custom adapter per screen</td>
+                        <td>Courses, calendar events and contacts are all list-shaped</td>
+                    </tr>
+                    <tr>
+                        <td>Add-course flow</td>
+                        <td><code>ViewPager</code> + <code>TabLayout</code></td>
+                        <td>Catalogue and manual entry as two tabs returning the same result type</td>
+                    </tr>
+                    <tr>
+                        <td>Persistence</td>
+                        <td><code>SharedPreferences</code> (serialised timetable string)</td>
+                        <td>The only mutable state is one student's own schedule — no database needed</td>
+                    </tr>
+                    <tr>
+                        <td>Content data</td>
+                        <td>Three JSON files in <code>assets/</code></td>
+                        <td>Ships with the APK, so the app works fully offline</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Bundled data</h3>
+            <table>
+                <thead>
+                    <tr><th>Asset</th><th>Entries</th><th>Feeds</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>all_courses.json</code></td><td>161 courses across 6 majors, 4 section types</td><td>Course catalogue</td></tr>
+                    <tr><td><code>calendar.json</code></td><td>47 events, 14 flagged as holidays</td><td>Academic calendar</td></tr>
+                    <tr><td><code>phone_number.json</code></td><td>28 contacts with name, number and email</td><td>Campus directory</td></tr>
+                </tbody>
+            </table>
+
+            <div class="project-description">
+                <p>
+                    Each catalogue entry carries <code>major</code>, <code>name</code>, <code>title</code>,
+                    <code>type</code> (LEC, LAB, REC or SEM), <code>credit</code>, <code>days</code>,
+                    <code>startTime</code>, <code>endTime</code>, <code>room</code>, <code>instructor</code>,
+                    a <code>hasLab</code> flag and a <code>link</code> to the official course description.
+                </p>
+                <p>
+                    Shipping the catalogue inside the APK was the right call for a first release — the app is
+                    fully usable offline and there is no backend to keep running — but it is also the design's
+                    main limitation, since a new semester means a new build. Firebase is already wired into the
+                    project (Auth, Realtime Database, Firestore and Analytics are all declared, alongside a
+                    <code>google-services.json</code>) as the groundwork for moving that content server-side;
+                    in the shipped version the three screens still read from the bundled assets.
+                </p>
+            </div>
+        </div>
+
+        <!-- Roadmap -->
+        <div class="project-section">
+            <h2>Planned Work</h2>
+            <div class="project-description">
+                <p>
+                    The feature named in the README as next up is an <strong>AI chatbot, also called 순이</strong>,
+                    trained on the questions students ask most often — so the app can answer routine
+                    "when is the add/drop deadline" and "who do I contact about housing" questions directly
+                    instead of making the student find the right calendar entry or phone number themselves.
+                </p>
+                <p>
+                    The natural companion to that is moving the course catalogue and academic calendar off the
+                    bundled JSON files and onto the Firebase backend that the project is already configured for,
+                    so a new semester becomes a data update rather than an app release.
+                </p>
+            </div>
+        </div>
+
+        <!-- Team -->
+        <div class="project-section">
+            <h2>Team</h2>
+            <table>
+                <thead>
+                    <tr><th>Role</th><th>Person</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Android development</td><td><strong>Hojung Lim</strong></td></tr>
+                    <tr><td>iOS development</td><td>Hasung Jun</td></tr>
+                    <tr><td>Design</td><td>Ahyoung Oh</td></tr>
+                </tbody>
+            </table>
+            <div class="project-description">
+                <p>
+                    Both clients were built against a single shared design, which is why the two platforms look
+                    identical screen for screen. My side was the Android app end to end — navigation, the
+                    timetable and its persistence, the course catalogue and filtering, the calendar and
+                    directory screens, and the release builds.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
