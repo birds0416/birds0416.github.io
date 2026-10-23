@@ -104,6 +104,30 @@
             margin-bottom: 16px;
         }
 
+        .screen-gallery {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .screen-gallery figure {
+            color: #555;
+            font-size: 0.9em;
+            text-align: center;
+        }
+
+        .screen-gallery img {
+            display: block;
+            width: 100%;
+            aspect-ratio: 1 / 2;
+            object-fit: cover;
+            margin-bottom: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 14px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.14);
+        }
+
         .phone-shot {
             width: 240px;
             max-width: 100%;
@@ -137,6 +161,15 @@
             .title-row {
                 flex-direction: column;
                 align-items: flex-start;
+            }
+            .screen-gallery {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .screen-gallery {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
 
@@ -452,21 +485,31 @@
             </div>
         </div>
 
-        <!-- ============================================================
-             SCREENSHOT SET 1 — App overview / hero shots
-             ============================================================
-             TODO (Roy): add 3 iPhone screenshots here as an overview row.
-             Recommended: Record tab (session running) · History session detail ·
-             Analysis tab timeline. Save them into images/ with these names,
-             then delete this comment block and uncomment the markup below.
-
-        <div class="phone-row">
-            <img src="images/SnoreDetector_record.png" alt="Record tab with a session running" class="phone-shot">
-            <img src="images/SnoreDetector_history_detail.png" alt="Session detail with night timeline and waveform scrubber" class="phone-shot">
-            <img src="images/SnoreDetector_analysis.png" alt="Analysis tab with sleep-stage timeline and snore overlays" class="phone-shot">
+        <div class="project-section">
+            <h2>App Screenshots</h2>
+            <div class="screen-gallery">
+                <figure>
+                    <img src="images/SnoreDetector_main_screen.png" alt="Snore Detector main screen">
+                    <figcaption>Main</figcaption>
+                </figure>
+                <figure>
+                    <img src="images/SnoreDetector_detection_screen.png" alt="Snore detection screen">
+                    <figcaption>Detection</figcaption>
+                </figure>
+                <figure>
+                    <img src="images/SnoreDetector_history_screen.png" alt="Snoring history screen">
+                    <figcaption>History</figcaption>
+                </figure>
+                <figure>
+                    <img src="images/SnoreDetector_analysis_screen.png" alt="Snoring analysis screen">
+                    <figcaption>Analysis</figcaption>
+                </figure>
+                <figure>
+                    <img src="images/SnoreDetector_settings_screen.png" alt="Snore Detector settings screen">
+                    <figcaption>Settings</figcaption>
+                </figure>
+            </div>
         </div>
-        <p class="figure-caption">The three main screens: live recording, per-night review with waveform playback, and snoring correlated against Apple Health sleep stages.</p>
-             ============================================================ -->
 
         <!-- ============================================================
              Tech stack
