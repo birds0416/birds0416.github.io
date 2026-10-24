@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golf Clicker — iPhone + Apple Watch Golf Stroke Counter - Hojung Lim</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #0366d6;
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-size: 1em;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #0256b9;
+            text-decoration: underline;
+        }
+
+        .title-row {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 10px;
+        }
+
+        .app-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+            flex-shrink: 0;
+        }
+
+        h1 {
+            font-size: 2em;
+            color: #333;
+        }
+
+        .authors {
+            color: #777;
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+
+        .project-section {
+            margin-bottom: 50px;
+        }
+
+        .project-image {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .project-image-half {
+            width: 50%;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /*
+          Phone screenshot layout.
+          .phone-row holds 1-3 iPhone screenshots side by side, centered,
+          and stacks them vertically on narrow screens.
+        */
+        .phone-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .screen-gallery {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .screen-gallery figure {
+            color: #555;
+            font-size: 0.9em;
+            text-align: center;
+        }
+
+        .phone-gallery {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .watch-gallery {
+            grid-template-columns: repeat(3, minmax(0, 150px));
+            justify-content: center;
+        }
+
+        .screen-gallery img {
+            display: block;
+            width: 100%;
+            aspect-ratio: 1 / 2;
+            object-fit: cover;
+            margin-bottom: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 14px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.14);
+        }
+
+        .watch-gallery img {
+            aspect-ratio: auto;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .phone-shot {
+            width: 240px;
+            max-width: 100%;
+            border-radius: 18px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.14);
+        }
+
+        .watch-shot {
+            width: 150px;
+            max-width: 100%;
+            border-radius: 22px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.14);
+        }
+
+        .figure-caption {
+            font-size: 0.85em;
+            color: #888;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .image-row {
+                flex-direction: column;
+            }
+            .project-image-half {
+                width: 100%;
+            }
+            .title-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .screen-gallery {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+            .phone-gallery {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .screen-gallery {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .phone-gallery {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .watch-gallery {
+                grid-template-columns: repeat(2, minmax(0, 150px));
+            }
+        }
+
+        .project-description {
+            font-size: 1em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .project-description p {
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.6em;
+            color: #333;
+            margin-bottom: 15px;
+            margin-top: 30px;
+            border-left: 4px solid #0366d6;
+            padding-left: 12px;
+        }
+
+        h3 {
+            font-size: 1.2em;
+            color: #444;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .tag {
+            background-color: #e8f4ff;
+            color: #0366d6;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .highlight-box {
+            background-color: #f0f7ff;
+            border-left: 4px solid #0366d6;
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        .warning-box {
+            background-color: #fff8f0;
+            border-left: 4px solid #e08a1e;
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #0366d6;
+        }
+
+        .metric-label {
+            font-size: 0.85em;
+            color: #777;
+            margin-top: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+        }
+
+        th {
+            background-color: #0366d6;
+            color: white;
+            padding: 10px 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 9px 14px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f8f9fa;
+        }
+
+        .pipeline-block {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 14px 18px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.88em;
+            color: #333;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            padding: 1px 5px;
+            font-size: 0.92em;
+            color: #333;
+        }
+
+        .doc-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .pdf-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #0366d6;
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #f0f0f0;
+            border-radius: 6px;
+            font-size: 0.95em;
+            transition: background-color 0.3s;
+        }
+
+        .pdf-link:hover {
+            background-color: #e0e0e0;
+            text-decoration: underline;
+        }
+
+        .repo-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #24292f;
+            text-decoration: none;
+            padding: 10px 18px;
+            background-color: #f0f0f0;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            font-size: 0.95em;
+            font-weight: 500;
+            margin-bottom: 30px;
+            transition: background-color 0.3s;
+        }
+
+        .repo-link:hover {
+            background-color: #e4e8ec;
+        }
+
+        .repo-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        ul, ol {
+            padding-left: 22px;
+            color: #555;
+        }
+
+        ul li, ol li {
+            margin-bottom: 8px;
+        }
+
+        .result-badge {
+            display: inline-block;
+            background: #e8f4ff;
+            color: #0366d6;
+            border-radius: 6px;
+            padding: 3px 10px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .result-badge.done {
+            background: #eaf7ee;
+            color: #1a7f37;
+        }
+
+        .result-badge.fail {
+            background: #fff0f0;
+            color: #cc3333;
+        }
+
+        .stage-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 18px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .stage-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .stage-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">← Back to Home</a>
+
+        <div class="title-row">
+            <img src="../images/GolfClicker_appicon.png" alt="Golf Clicker app icon" class="app-icon">
+            <h1>Golf Clicker — iPhone + Apple Watch Golf Stroke Counter</h1>
+        </div>
+        <p class="authors">Hojung Lim &nbsp;·&nbsp; Personal iOS project, 2026 &nbsp;·&nbsp; Swift, SwiftUI, SwiftData, WatchConnectivity, ActivityKit</p>
+
+        <div class="tag-list">
+            <span class="tag">Swift</span>
+            <span class="tag">SwiftUI</span>
+            <span class="tag">SwiftData</span>
+            <span class="tag">watchOS</span>
+            <span class="tag">WatchConnectivity</span>
+            <span class="tag">ActivityKit</span>
+            <span class="tag">Live Activities</span>
+            <span class="tag">Dynamic Island</span>
+            <span class="tag">WidgetKit</span>
+            <span class="tag">XCTest</span>
+            <span class="tag">Offline-first</span>
+            <span class="tag">Source is private — coming to the App Store</span>
+        </div>
+
+        <div class="project-section">
+            <h2>Project Overview</h2>
+            <div class="highlight-box">
+                <strong>Count every stroke. Nothing else.</strong> A deliberately minimal, fully offline golf
+                stroke counter for iPhone and Apple Watch. Count strokes from your wrist while your phone stays
+                in your pocket, or while another golf app (e.g. 18Birdies) is open on the phone. No account,
+                network, backend, or iCloud.
+            </div>
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-value">18</div>
+                    <div class="metric-label">Holes per round, with Front 9 / Back 9 / total subtotals</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">3</div>
+                    <div class="metric-label">Targets: iPhone app, Apple Watch app, Live Activity widget extension</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">20</div>
+                    <div class="metric-label">XCTest unit tests covering the round store and sync idempotency</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">0</div>
+                    <div class="metric-label">Network calls; all data stays on the device</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-section">
+            <h2>App Screenshots</h2>
+            <h3>iPhone</h3>
+            <div class="screen-gallery phone-gallery">
+                <figure>
+                    <img src="../images/GolfClicker_main_screen.png" alt="Golf Clicker home screen with current round and round history">
+                    <figcaption>Home</figcaption>
+                </figure>
+                <figure>
+                    <img src="../images/GolfClicker_round_screen.png" alt="Active round screen with hole, par selector, stroke counter and controls">
+                    <figcaption>Active round</figcaption>
+                </figure>
+                <figure>
+                    <img src="../images/GolfClicker_roundhistory_screen.png" alt="Round History screen with no completed rounds">
+                    <figcaption>Round History</figcaption>
+                </figure>
+                <figure>
+                    <img src="../images/GolfClicker_scorecard_screen.png" alt="Scorecard showing Front 9 and hole scores">
+                    <figcaption>Scorecard</figcaption>
+                </figure>
+            </div>
+
+            <h3>Apple Watch</h3>
+            <div class="screen-gallery watch-gallery">
+                <figure>
+                    <img src="../images/GolfClicker_watch_strokes_hole1.png" alt="Apple Watch stroke counter on hole 1">
+                    <figcaption>Hole 1</figcaption>
+                </figure>
+                <figure>
+                    <img src="../images/GolfClicker_watch_strokes_hole2.png" alt="Apple Watch stroke counter on hole 2">
+                    <figcaption>Hole 2</figcaption>
+                </figure>
+                <figure>
+                    <img src="../images/GolfClicker_watch_hole_complete.png" alt="Apple Watch hole-complete screen with Sync now button">
+                    <figcaption>Hole complete</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="project-section">
+            <h2>Tech Stack</h2>
+            <table>
+                <thead>
+                    <tr><th>Area</th><th>Tooling</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Apps</td><td>Swift, SwiftUI (iOS 17+, watchOS 11+)</td></tr>
+                    <tr><td>Persistence</td><td>SwiftData (local only, <code>cloudKitDatabase: .none</code>)</td></tr>
+                    <tr><td>State</td><td>Observation (<code>@Observable</code>)</td></tr>
+                    <tr><td>Phone and watch sync</td><td>WatchConnectivity</td></tr>
+                    <tr><td>Lock Screen and widgets</td><td>ActivityKit + WidgetKit</td></tr>
+                    <tr><td>Testing</td><td>XCTest</td></tr>
+                    <tr><td>Haptics</td><td><code>sensoryFeedback</code></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="project-section">
+            <h2>Architecture</h2>
+            <div class="pipeline-block">Watch tap ──► WatchEvent (UUID, absolute count) ──► transferUserInfo + sendMessage
+          ──► iPhone: dedupe by id ──► RoundStore (atomic save) ──► RoundSnapshot ──► Watch + Live Activity</div>
+            <table>
+                <thead>
+                    <tr><th>Component</th><th>Responsibility</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>RoundStore.swift</code></td>
+                        <td>Single entry point for every mutation. Each change is saved immediately and rolled back on failure, so on-disk state is never half-updated. Notifies observers after each commit (watch sync, Live Activity).</td>
+                    </tr>
+                    <tr>
+                        <td><code>GolfRound</code> / <code>GolfHole</code> (SwiftData)</td>
+                        <td>Round to 18 holes with cascade delete. A <code>revision</code> counter is bumped on every change for sync conflict resolution.</td>
+                    </tr>
+                    <tr>
+                        <td><code>PhoneSyncCoordinator.swift</code></td>
+                        <td>Pushes a <code>RoundSnapshot</code> via <code>updateApplicationContext</code> (durable, latest wins) plus <code>sendMessage</code> when reachable. Dedupes watch events by id; the last 300 ids are persisted.</td>
+                    </tr>
+                    <tr>
+                        <td><code>WatchStore.swift</code> / <code>WatchSyncCoordinator.swift</code></td>
+                        <td>Watch-local state persisted to UserDefaults. Events go through <code>transferUserInfo</code> (durable queue, older queued stroke events for the same hole are collapsed) and <code>sendMessage</code> (instant).</td>
+                    </tr>
+                    <tr>
+                        <td><code>RoundActivityController.swift</code> + <code>RoundLiveActivity.swift</code></td>
+                        <td>Keeps exactly one Live Activity in step with the active round (ActivityKit + WidgetKit).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="project-section">
+            <h2>Engineering Notes — Sync Correctness</h2>
+            <div class="highlight-box">
+                <strong>Built for real golf-course conditions:</strong> Bluetooth drops, a locked phone, and the
+                app not running. The phone remains the source of truth while absolute events and revisioned
+                snapshots keep the watch in sync.
+            </div>
+            <ul>
+                <li>The watch sends <strong>absolute stroke counts</strong>, not <code>+1</code> deltas, so a duplicated or replayed event cannot double-count.</li>
+                <li>Events are idempotent. Duplicates (same UUID) are ignored. A stale event (older timestamp than a newer phone edit on the same hole) is rejected. "Finish hole" on an already-completed hole does nothing, so a hole can never be skipped.</li>
+                <li>After any event, even a rejected one, the phone re-publishes its snapshot so the watch always converges back to the phone's state.</li>
+                <li>Snapshots with an older <code>revision</code> are ignored on the watch. If the watch's local strokes are newer than the phone's, it keeps them and resends.</li>
+            </ul>
+        </div>
+
+        <div class="project-section">
+            <h2>Feature Tour</h2>
+
+            <h3>Home</h3>
+            <div class="project-description">
+                <p>Start New Round, Round History, and a "Resume Current Round" card with a circular 18-hole progress ring and "Started 1:05 PM · Thru 7 · +2". The card has custom swipe-to-delete (short swipe reveals the trash button, long swipe deletes, Mail-style). Starting a new round while one is active asks whether to resume or replace; the replaced round is still saved to history.</p>
+            </div>
+
+            <h3>Active round</h3>
+            <div class="project-description">
+                <p>Big hole number; Thru / Score / Total pills; a Par 3 / 4 / 5 selector; and a large 260-pt circular stroke button with haptics (disabled with "SELECT PAR" until par is chosen). A live "2 over par" / "At par" line sits with Undo and Finish Hole buttons. After hole 18, a round-complete screen shows total and score relative to par, followed by a Finish Round confirmation.</p>
+            </div>
+
+            <h3>Scorecard</h3>
+            <div class="project-description">
+                <p>Front 9 / Back 9 sections with Out/In subtotals and a total row. Color-coded +/- badges (red under par, blue over par). Tapping a completed hole opens an edit sheet to fix its par or strokes, and totals recalculate. Accessibility labels read scores by name (Birdie, Bogey, Eagle…).</p>
+            </div>
+
+            <h3>Round History</h3>
+            <div class="project-description">
+                <p>Completed rounds, newest first, showing date, start time, holes played, duration, total strokes and +/- par. Swipe to delete. Tap a round to see its full scorecard with a summary banner.</p>
+            </div>
+
+            <h3>Apple Watch</h3>
+            <div class="project-description">
+                <p>The same big-button counter, sized relative to the watch screen so it fits every case size, with Undo and Finish Hole buttons and haptics. Shows "Hole 5 complete — Set up Hole 6 on your iPhone" until par is picked on the phone. Keeps counting when the phone is unreachable and offers a "Sync now" button.</p>
+            </div>
+
+            <h3>Live Activity / Dynamic Island</h3>
+            <div class="project-description">
+                <p>A Lock Screen banner and Dynamic Island (compact, expanded and minimal views) showing the current hole, par, strokes and "Thru n · total · +/-". It updates after every change, including watch taps while the iPhone app is in the background, and dismisses itself 15 minutes after the round finishes.</p>
+            </div>
+
+            <h3>Light and dark mode</h3>
+            <div class="project-description">
+                <p>Custom "fairway green" theme; every color adapts to light and dark mode.</p>
+            </div>
+        </div>
+
+        <div class="project-section">
+            <h2>Milestones</h2>
+            <table>
+                <thead>
+                    <tr><th>Milestone</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>iPhone stroke counter, scorecard, history</td><td><span class="result-badge done">Done</span></td></tr>
+                    <tr><td>Apple Watch companion + offline-tolerant sync</td><td><span class="result-badge done">Done</span></td></tr>
+                    <tr><td>Live Activity / Dynamic Island</td><td><span class="result-badge done">Done</span></td></tr>
+                    <tr><td>20 unit tests (store logic + sync idempotency)</td><td><span class="result-badge done">Done</span></td></tr>
+                    <tr><td>On-device testing on a real iPhone + Apple Watch</td><td><span class="result-badge">In progress</span></td></tr>
+                    <tr><td>App Store release</td><td><span class="result-badge">Planned</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p><a href="golf-clicker/privacy.html">Privacy Policy</a></p>
+    </div>
+</body>
+</html>
